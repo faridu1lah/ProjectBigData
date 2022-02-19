@@ -1,4 +1,3 @@
-import db
 from db import connection
 
 if connection.is_connected():
