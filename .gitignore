@@ -350,4 +350,4 @@ MigrationBackup/
 .ionide/
 
 # Database configuration file
-db.py
+config.py
