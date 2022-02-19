@@ -2,9 +2,9 @@
 
 mysql = {
     "host": "oege.ie.hva.nl",
-    "user": "your user",
-    "password": "your pass",
-    "database": "your db",
+    "user": "fariduf",
+    "password": "I.RdiJt.qS.otf",
+    "database": "zfariduf",
     "port": "3306",
 }
 
