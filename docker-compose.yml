@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+  big_data:
+    build: .
+    restart: unless-stopped
+    ports:
+      - '8501:8501'
+
+networks:
+  default:
+    external:
+      name: main
