@@ -15,3 +15,8 @@ Stap 4: Wijzig de db.py naar je de gegevens die je per e-mail hebt ontvangen (ge
 Stap 5: Voeg het db.py bestand toe aan .gitignore zodat deze niet gepushed wordt met elke commit.
 
 (Optioneel) Stap 6: Maak een databaseconnectie via jouw SQL-client (bijv Workbench). Je kan ook online PhpMyAdmin gebruiken via: https://oege.ie.hva.nl/phpmyadmin/. Hier log je in met de accountgegevens die je per e-mail hebt ontvangen
+
+
+
+## docker uitleg:
+- https://www.rockyourcode.com/run-streamlit-with-docker-and-docker-compose/
