@@ -8,7 +8,7 @@ services:
     ports:
       - '8501:8501'
 
-# networks:
-#   default:
-#     external:
-#       name: main
+networks:
+   default:
+     external:
+       name: main
