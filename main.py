@@ -3,10 +3,10 @@ import streamlit as sl
 import pandas as pd
 import folium
 
-if connection.is_connected():
-    cursor = connection.cursor()
-    cursor.execute("select database();")
-    print("You're connected to database in main: ", cursor.fetchone())
+# if connection.is_connected():
+#     cursor = connection.cursor()
+#     cursor.execute("select database();")
+#     print("You're connected to database in main: ", cursor.fetchone())
 
 
 header = sl.container()
@@ -24,6 +24,14 @@ map_data = amsterdam_data
 map_data.rename(columns={"Lat": "lat", "Lon": "lon"}, inplace=True)
 
 sl.map(map_data)
+
+
+ch_data = amsterdam_data
+# ch_data["PriceRoom"] = ch_data["Price"] / 100 / ch_data["Room"]
+
+chart_data = pd.DataFrame(amsterdam_data, columns=["Price", "Room"])
+
+sl.line_chart(chart_data)
 
 # map = folium.Map(
 #     location=[
