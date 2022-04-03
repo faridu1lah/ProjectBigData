@@ -3,10 +3,10 @@ import streamlit as sl
 import pandas as pd
 import folium
 
-# if connection.is_connected():
-#     cursor = connection.cursor()
-#     cursor.execute("select database();")
-#     print("You're connected to database in main: ", cursor.fetchone())
+if connection.is_connected():
+    cursor = connection.cursor()
+    cursor.execute("select database();")
+    print("You're connected to database in main: ", cursor.fetchone())
 
 
 header = sl.container()
