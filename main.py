@@ -4,6 +4,7 @@ import streamlit as sl
 import pandas as pd
 #import folium
 import navbar as nav
+from views import home,about,projecy
 
 # if connection.is_connected():
 #     cursor = connection.cursor()
@@ -25,6 +26,7 @@ selected1= nav.streamlit_menu(example=2)
 selected2 = nav.streamlit_menu(example=3)
 
 if selected == "Home":
+    home.load_view()
     sl.title(f"You have selected {selected}")
     map_data.rename(columns={"Lat": "lat", "Lon": "lon"}, inplace=True)
 
