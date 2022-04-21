@@ -3,3 +3,4 @@ pandas
 streamlit
 matplotlib
 folium
+streamlit_option_menu
