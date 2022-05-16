@@ -1,26 +1,12 @@
-import mysql.connector as mysql
 from mysql.connector import Error
-import config
+from config import mysql
+from sqlalchemy import create_engine
 
 try:
     # Try to establish connection with database
-    connection = mysql.connect(
-        host=config.mysql["host"],
-        user=config.mysql["user"],
-        password=config.mysql["password"],
-        database=config.mysql["database"],
-        port=config.mysql["port"],
-    )
-
-    # If the connection is established print some data about the connection
-    # if connection.is_connected():
-    #     db_Info = connection.get_server_info()
-    #     print("Connected to MySQL Server version ", db_Info)
-    #     cursor = connection.cursor()
-    #     cursor.execute("select database();")
-    #     record = cursor.fetchone()
-    #     print("You're connected to database: ", record)
-
+    connection = create_engine(f"mysql+mysqlconnector://{mysql['user']}:{mysql['user']}@{mysql['host']}/{mysql['database']}")
+    data = connection.execute("select database();")
+    print(f"Connected to database: {data.fetchone()[0]}")
 # Catch any errors thrown and print it
 except Error as e:
     print("Error while connecting to MySQL database: ", e)

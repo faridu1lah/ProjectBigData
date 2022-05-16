@@ -1,3 +1,4 @@
+import imp
 import streamlit as st
 import navigation
 
@@ -21,10 +22,27 @@ navigation.load()
 
 
 # from db import connection
+
 # if connection.is_connected():
+
 #     cursor = connection.cursor()
 #     cursor.execute("select database();")
 #     print("You're connected to database in main: ", cursor.fetchone())
+
+from sqlalchemy import create_engine
+from cleaning import getData, getGeoInfo
+
+engine = create_engine("mysql+mysqlconnector://root:root@localhost/big_data")
+
+
+data = getData()
+latLonData = getGeoInfo()
+
+
+# data.to_sql(name="amsterdam", con=engine, if_exists="fail", index=False, chunksize=1000)
+# data.to_sql(name="geo_info", con=engine, if_exists="fail", index=False, chunksize=1000)
+
+# df.to_sql(name="amsterdam", con=engine, if_exists="replace", index=False, chunksize=1000)
 
 
 # dit hebben we niet meer nodig
