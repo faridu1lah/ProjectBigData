@@ -30,9 +30,10 @@ def load():
     params = st.experimental_get_query_params()
     token = params["token"][0] if "token" in params else ""
 
-    st.title(token)
-
     if token == "bestgroup":
+
+        st.title("Updated databse from csv!")
+
         from db import connection
         from cleaning import getData, getGeoInfo
 
@@ -40,7 +41,7 @@ def load():
         latLonData = getGeoInfo()
 
         data.to_sql(name="amsterdam", con=connection, if_exists="replace", index=False, chunksize=1000)
-        data.to_sql(name="geo_info", con=connection, if_exists="replace", index=False, chunksize=1000)
+        latLonData.to_sql(name="geo_info", con=connection, if_exists="replace", index=False, chunksize=1000)
 
     if selected == "Home":
         # home.load_view()
