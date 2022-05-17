@@ -70,5 +70,6 @@ def getGeoInfo():
     raw.head(5)
 
     cols_to_keep = ["Wijkcode", "LNG", "LAT"]
+    data = raw[cols_to_keep].rename(columns={"LAT": "lat", "LNG": "lon", "Wijkcode": "wijkcode"})
 
-    return raw[cols_to_keep]
+    return data

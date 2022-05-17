@@ -87,30 +87,11 @@ def load_view():
             st.markdown("### Check out the prices!")
 
             import pandas as pd
+            from db import connection
 
-            amsterdam_data = pd.read_csv("data/h-amsterdam.csv")
-
-            amsterdam_data.rename(columns={"Lat": "lat", "Lon": "lon"}, inplace=True)
+            amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
 
             st.map(amsterdam_data)
-            # doc = st.text_area(
-            #     "Paste your text below (max 500 words)",
-            #     height=510,
-            # )
-
-            # MAX_WORDS = 500
-            # import re
-
-            # res = len(re.findall(r"\w+", doc))
-            # if res > MAX_WORDS:
-            #     st.warning(
-            #         "⚠️ Your text contains "
-            #         + str(res)
-            #         + " words."
-            #         + " Only the first 500 words will be reviewed. Stay tuned as increased allowance is coming! 😊"
-            #     )
-
-            #     doc = doc[:MAX_WORDS]
 
     if not submit_button:
         st.stop()
