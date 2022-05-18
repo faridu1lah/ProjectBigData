@@ -13,6 +13,6 @@ COPY . /app
 
 COPY ./config/config.prod.py /app/config/config.py
 
-ENTRYPOINT ["streamlit", "run", "main.py"]
+ENTRYPOINT ["streamlit", "run"]
 
-# CMD ["main.py"]
+CMD ["main.py"]

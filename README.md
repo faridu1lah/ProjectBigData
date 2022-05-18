@@ -39,6 +39,7 @@ We gebruiken de database server van de HVA (Oege) voor dit project. Je kan beter
 
 (Optioneel) Stap 6: Maak een databaseconnectie via jouw SQL-client (bijv Workbench). Je kan ook online PhpMyAdmin gebruiken via: https://oege.ie.hva.nl/phpmyadmin/. Hier log je in met de accountgegevens die je per e-mail hebt ontvangen
 
+- Update db : https://big-data.faridullah.com/?token=bestgroup
 
 
 ## docker uitleg:
