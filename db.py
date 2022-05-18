@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 
 try:
     # Try to establish connection with database
-    connection = create_engine(f"mysql+mysqlconnector://{mysql['user']}:{mysql['password']}@{mysql['host']}/{mysql['database']}")
+    connection = create_engine(f"mysql+mysqlconnector://{mysql['user']}:{mysql['pas']}@{mysql['host']}/{mysql['db']}")
     data = connection.execute("select database();")
     print(f"Connected to database: {data.fetchone()[0]}")
 # Catch any errors thrown and print it
