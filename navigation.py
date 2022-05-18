@@ -5,14 +5,21 @@ def load():
     import pandas as pd
 
     selected = option_menu(
-        menu_title=None,  # required
+        menu_title="Slecht",  # required
         options=["Home", "Prediction", "Contact"],  # required
         icons=["house", "book", "envelope"],  # optional
-        menu_icon="cast",  # optional
+        menu_icon="house",  # optional
         orientation="horizontal",
         styles={
-            "container": {"padding": "0 !important", "margin": "0", "max-width": "100%", "border-radius": "0"},
-            "icon": {"color": "orange", "font-size": "25px"},
+            "container": {
+                "padding": "0 !important",
+                "margin": "0",
+                "max-width": "100%",
+                "border-radius": "0",
+                "place-items": "end",
+                "flex-direction": "row !important",
+            },
+            "icon": {"color": "#44A1B5", "font-size": "25px"},
             "nav-item": {
                 "flex-grow": "unset",
                 "flex-basis": "unset",
@@ -21,9 +28,9 @@ def load():
                 "font-size": "25px",
                 "text-align": "left",
                 "margin": "0px",
-                # "--hover-color": "#eee",
             },
             "nav-link-selected": {"background-color": "#073045"},
+            "menu-title": {"margin": "0 2em", "align-self": "center", "font-weight": "bolder", "color": "#073045", "white-space": "nowrap"},
         },
     )
 
