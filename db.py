@@ -1,5 +1,5 @@
 from mysql.connector import Error
-from config import mysql
+from config.config import mysql
 from sqlalchemy import create_engine
 
 try:

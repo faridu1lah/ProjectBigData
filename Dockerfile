@@ -11,6 +11,8 @@ RUN pip install -r requirements.txt
 EXPOSE 8501
 COPY . /app
 
-ENTRYPOINT ["streamlit", "run"]
+COPY ./config/config.prod.py /app/config/config.py
 
-CMD ["main.py"]
+ENTRYPOINT ["streamlit", "run", "main.py"]
+
+# CMD ["main.py"]
