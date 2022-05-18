@@ -30,7 +30,7 @@ def load():
                 "margin": "0px",
             },
             "nav-link-selected": {"background-color": "#073045"},
-            "menu-title": {"margin": "0 2em", "align-self": "center", "font-weight": "bolder", "color": "#073045", "white-space": "nowrap"},
+            "menu-title": {"margin": "0 2em", "align-self": "center", "font-weight": "bolder", "color": "#44A1B5", "white-space": "nowrap"},
         },
     )
 

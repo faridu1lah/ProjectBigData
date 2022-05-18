@@ -25,7 +25,7 @@ def load_view():
 
             # Crime percentage
             facilities_per = st.slider("Facilities percentage:", 0, 100, 25)
-            # st.write("Crime: ", crime_percentage)
+            # st.write("Crime: ", facilities_per)
 
             submit_button = st.form_submit_button(label="🏠 Predict House Price!")
 
