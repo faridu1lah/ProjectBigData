@@ -20,7 +20,7 @@ python3 -m pip install -r requirements.txt
 # create new branch
 git checkout -b yourbranchname
 
-# addre an upstream branch
+# push/add to an upstream branch
 git push --set-upstream origin melih
 
 ```
