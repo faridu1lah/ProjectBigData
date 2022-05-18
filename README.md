@@ -14,6 +14,17 @@ streamlit run main.py
 python3 -m pip install -r requirements.txt
 ```
 
+## Git an GitHub
+```bash
+
+# create new branch
+git checkout -b yourbranchname
+
+# addre an upstream branch
+git push --set-upstream origin melih
+
+```
+
 ## Database 
 ---
 
