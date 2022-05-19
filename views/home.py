@@ -6,7 +6,7 @@ def load_view():
     # Reading all data
     from db import connection
 
-    woz = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
+    woz = pd.read_excel("data/2021_jaarboek_stadsdeel_wozwaarde.xlsx")
 
     # Dropping unnecessary columns for bar charts
     wozPerArea = woz.drop(["gemiddelde WOZ-waarde per m2"], axis=1)
