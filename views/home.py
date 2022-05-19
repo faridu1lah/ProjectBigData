@@ -3,9 +3,29 @@ def load_view():
     import pandas as pd
     import plotly.express as px
 
+    st.title(f"Welcome by house prediction!")
+
     # Reading all data
     from db import connection
 
+    amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 IS NOT NULL", con=connection)
+    amsterdam_data = amsterdam_data.rename(
+        columns={"WOZ_per_M2": "WOZ waarde per vierkante meter!", "jaar": "Jaar", "wijkcode": "Wijkcode", "gebiedcodenaam": "Gebiedcodenaam"}
+    )
+
+    fig = px.scatter(
+        amsterdam_data,
+        x="WOZ waarde per vierkante meter!",
+        y="Wijkcode",
+        color="Jaar",
+        size="WOZ waarde per vierkante meter!",
+        hover_data=["WOZ waarde per vierkante meter!", "Gebiedcodenaam"],
+        title="WOZ waarde per vierkante meter per wijk",
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    # charts
     woz = pd.read_excel("data/2021_jaarboek_stadsdeel_wozwaarde.xlsx")
 
     # Dropping unnecessary columns for bar charts
@@ -30,34 +50,9 @@ def load_view():
         template="plotly_white",
     )
 
-    st.title(f"Welcome by house prediction!")
     # Creating 2 columns
     col1, col2 = st.columns(2)
 
     # Placing both bar charts in 2 columns respectively
     col1.plotly_chart(avgPricePerArea)
     col2.plotly_chart(avgPricePerAreaPerM2)
-
-    # col3 = st.columns(12)[0]
-
-    amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 IS NOT NULL", con=connection)
-    # amsterdam_data.empty()
-    # print(amsterdam_data)
-
-    amsterdam_data = amsterdam_data.rename(
-        columns={"WOZ_per_M2": "WOZ waarde per vierkante meter!", "jaar": "Jaar", "wijkcode": "Wijkcode", "gebiedcodenaam": "Gebiedcodenaam"}
-    )
-
-    fig = px.scatter(
-        amsterdam_data,
-        x="WOZ waarde per vierkante meter!",
-        y="Wijkcode",
-        color="Jaar",
-        size="WOZ waarde per vierkante meter!",
-        hover_data=["WOZ waarde per vierkante meter!", "Gebiedcodenaam"],
-        title="WOZ waarde per vierkante meter per wijk",
-    )
-
-    # Placing both bar charts in 2 columns respectively
-    st.plotly_chart(fig, use_container_width=True)
-    # col2.plotly_chart(avgPricePerAreaPerM2)
