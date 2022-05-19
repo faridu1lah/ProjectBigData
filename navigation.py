@@ -52,12 +52,9 @@ def load():
 
     if selected == "Home":
         # home.load_view()
-        amsterdam_data = pd.read_csv("data/h-amsterdam.csv")
-        map_data = amsterdam_data
-        st.title(f"You have selected {selected}")
-        map_data.rename(columns={"Lat": "lat", "Lon": "lon"}, inplace=True)
+        from views import home
 
-        st.map(map_data)
+        home.load_view()
 
     if selected == "Prediction":
 
