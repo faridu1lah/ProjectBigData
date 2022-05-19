@@ -6,3 +6,4 @@ folium
 streamlit_option_menu
 sqlalchemy
 plotly
+openpyxl
