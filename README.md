@@ -16,7 +16,6 @@ python3 -m pip install -r requirements.txt
 
 ## Git an GitHub
 ```bash
-
 # create new branch
 git checkout -b yourbranchname
 

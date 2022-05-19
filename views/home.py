@@ -37,3 +37,27 @@ def load_view():
     # Placing both bar charts in 2 columns respectively
     col1.plotly_chart(avgPricePerArea)
     col2.plotly_chart(avgPricePerAreaPerM2)
+
+    # col3 = st.columns(12)[0]
+
+    amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 IS NOT NULL", con=connection)
+    # amsterdam_data.empty()
+    # print(amsterdam_data)
+
+    amsterdam_data = amsterdam_data.rename(
+        columns={"WOZ_per_M2": "WOZ waarde per vierkante meter!", "jaar": "Jaar", "wijkcode": "Wijkcode", "gebiedcodenaam": "Gebiedcodenaam"}
+    )
+
+    fig = px.scatter(
+        amsterdam_data,
+        x="WOZ waarde per vierkante meter!",
+        y="Wijkcode",
+        color="Jaar",
+        size="WOZ waarde per vierkante meter!",
+        hover_data=["WOZ waarde per vierkante meter!", "Gebiedcodenaam"],
+        title="WOZ waarde per vierkante meter per wijk",
+    )
+
+    # Placing both bar charts in 2 columns respectively
+    st.plotly_chart(fig, use_container_width=True)
+    # col2.plotly_chart(avgPricePerAreaPerM2)
