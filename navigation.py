@@ -5,7 +5,7 @@ def load():
     import pandas as pd
 
     selected = option_menu(
-        menu_title="Slecht",  # required
+        menu_title="Gold",  # required
         options=["Home", "Prediction", "Contact"],  # required
         icons=["house", "book", "envelope"],  # optional
         menu_icon="house",  # optional
