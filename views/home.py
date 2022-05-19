@@ -30,7 +30,7 @@ def load_view():
         template="plotly_white",
     )
 
-    st.title(f"You have selected Home")
+    st.title(f"Welcome by house prediction!")
     # Creating 2 columns
     col1, col2 = st.columns(2)
 
