@@ -19,3 +19,14 @@ st.markdown(
 
 # load navigation options and content
 navigation.load()
+
+
+# import pandas as pd
+# from db import connection
+# import plotly.express as px
+
+# amsterdam_data = pd.read_sql(
+#     "SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode) WHERE WOZ_per_M2 IS NOT NULL", con=connection
+# )
+
+# amsterdam_data.to_csv("tableu.csv")

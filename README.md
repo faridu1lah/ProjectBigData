@@ -1,9 +1,5 @@
 # ProjectBigData
 
-## Todo
----
-[-]
-
 ## Commands
 ---
 ```bash
