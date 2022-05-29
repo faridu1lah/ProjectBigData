@@ -28,7 +28,7 @@ def load_view():
         # st.write("You selected:", house_type)
 
         # number square meters
-        number_m = st.number_input("Square meters:")
+        number_m = st.number_input("Square meters:", step=1)
         # st.write("The current number is ", number_m)
 
         neighbourhood_data = connection.execute(
