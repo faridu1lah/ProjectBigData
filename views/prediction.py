@@ -1,47 +1,60 @@
+from textwrap import wrap
+from nbformat import write
+import numpy
+
+
 def load_view():
     import streamlit as st
 
     st.markdown("## Predicting house prices in Amsterdam")
-    with st.form(key="my_form"):
+    # with st.form(key="my_form"):
 
-        c1, c2 = st.columns([1, 5])
+    c1, c2 = st.columns([1, 5])
+    import pandas as pd
+    from db import connection
 
-        with c1:
+    with c1:
 
-            # Title
-            st.markdown("#### 🏠 Future house details?")
+        # Title
+        st.markdown("#### 🏠 Future house details?")
 
-            # House type
-            house_type = st.selectbox("Type Of house:", ("All", "Housing associations", "Private rent", "Purchased house"))
-            # st.write("You selected:", house_type)
+        amsterdam_data = pd.read_sql("SELECT gebiedcodenaam FROM amsterdam GROUP BY gebiedcodenaam", con=connection)
 
-            # number square meters
-            number_m = st.number_input("Square meters:")
-            # st.write("The current number is ", number_m)
+        # House type
+        neighbourhood = st.selectbox("Your new neighbourhood:", amsterdam_data)
 
-            # Crime percentage
-            crime_per = st.slider("Crime percentage:", 0, 100, 25)
-            # st.write("Crime: ", crime_percentage)
+        # House type
+        house_type = st.selectbox("Type Of house:", ("All", "Housing associations", "Private rent", "Purchased house"))
+        # st.write("You selected:", house_type)
 
-            # Crime percentage
-            facilities_per = st.slider("Facilities percentage:", 0, 100, 25)
-            # st.write("Crime: ", facilities_per)
+        # number square meters
+        number_m = st.number_input("Square meters:")
+        # st.write("The current number is ", number_m)
 
-            submit_button = st.form_submit_button(label="🏠 Predict House Price!")
+        neighbourhood_data = connection.execute(
+            f"SELECT FLOOR(SUM(VCRIMIN_I) / count(*)) AS 'crime', FLOOR(SUM(Aanbod_basisscholen + Culturele_voorzieningen)) AS 'facilities' FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'"
+        ).first()
 
-            if submit_button == True:
-                st.write("Your info: ", house_type, number_m, crime_per, facilities_per)
+        # Crime percentage
+        crime = st.number_input("Average crime encounters:", value=int(neighbourhood_data.crime), disabled=True)
+        # st.write("Crime: ", crime_percentage)
 
-        with c2:
+        # Crime percentage
+        facilities = st.number_input("Amount of facilities:", value=int(neighbourhood_data.facilities), disabled=True)
+        # st.write("Crime: ", facilities_per)
 
-            st.markdown("### Check out the prices!")
+        submit_button = st.button(label="🏠 Predict House Price!")
 
-            import pandas as pd
-            from db import connection
+        if submit_button == True:
+            st.write("Your info: ", neighbourhood, house_type, number_m, crime, facilities)
 
-            amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
+    with c2:
 
-            st.map(amsterdam_data)
+        st.markdown("### Check out the prices!")
 
-    if not submit_button:
-        st.stop()
+        amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
+
+        st.map(amsterdam_data)
+
+    # if not submit_button:
+    #     st.stop()

@@ -13,6 +13,7 @@ st.markdown(
         iframe[title="streamlit_option_menu.option_menu"] {position:fixed; top:0;right: 0;left: 0;width: 100%;z-index:9999999;}
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
+        button{ width:100% !important;}
     </style> """,
     unsafe_allow_html=True,
 )
