@@ -58,6 +58,8 @@ def getData():
         }
     )
 
+    data.fillna(0, inplace=True)
+
     return data
 
 
