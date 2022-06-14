@@ -60,6 +60,14 @@ def getData():
 
     data.fillna(0, inplace=True)
 
+    data = data.replace(",", ".", regex=True)
+
+    from sklearn.preprocessing import LabelEncoder
+
+    le = LabelEncoder()
+
+    data["gebiedscode"] = le.fit_transform(data["gebiedcodenaam"])
+
     return data
 
 

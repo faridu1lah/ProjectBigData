@@ -1,4 +1,3 @@
-import string
 import streamlit as st
 import pandas as pd
 from db import connection
@@ -26,32 +25,33 @@ def load_view():
         # st.write("You selected:", house_type)
 
         # number square meters
-        number_m = st.number_input("Square meters:", step=1)
+        number_m = st.number_input("Square meters:", step=1, value=60)
         # st.write("The current number is ", number_m)
 
         neighbourhood_data = connection.execute(
-            f"SELECT FLOOR(SUM(VCRIMIN_I) / count(*)) AS 'crime', FLOOR(SUM(Aanbod_basisscholen + Culturele_voorzieningen)) AS 'facilities' FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'"
+            f"SELECT *, FLOOR(SUM(VCRIMIN_I) / count(*)) AS 'crime', FLOOR(SUM(Aanbod_basisscholen + Culturele_voorzieningen)) AS 'facilities' FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'"
         ).first()
 
         # Crime percentage
-        crime = st.number_input("Average crime encounters:", value=int(neighbourhood_data.crime), disabled=True)
+        crime = st.number_input("Average crime encounters:", value=int(neighbourhood_data.crime))
         # st.write("Crime: ", crime_percentage)
 
-        # Crime percentage
-        facilities = st.number_input("Amount of facilities:", value=int(neighbourhood_data.facilities), disabled=True)
+        # facilities amount
+        facilities = st.number_input("Amount of facilities:", value=int(neighbourhood_data.facilities))
         # st.write("Crime: ", facilities_per)
 
         submit_button = st.button(label="🏠 Predict House Price!")
 
         if submit_button == True:
-
-            # predict()
-
             st.write("Your info: ", neighbourhood, house_type, number_m, crime, facilities)
 
     with c2:
 
         st.markdown("### Check out the prices!")
+
+        if submit_button == True:
+            pre = predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data)
+            st.markdown(f"#### 🏠 Your new house will cost you about : € {round((pre[0] * number_m), 2)}")
 
         amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
 
@@ -61,81 +61,31 @@ def load_view():
         st.stop()
 
 
-# def predict():
+def predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data):
+    from model import loadModel
+    import pandas as pd
 
-#     amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 > 0", con=connection)
-#     amsterdam_data = amsterdam_data.apply(lambda x: x.apply(lambda y: y.str.replace(",", ".") if type(y) == string else y))
+    client_data = {
+        "Corporatiewoningen": [1 if house_type == "Housing associations" or house_type == "All" else 0],
+        "Koopwoninging": [1 if house_type == "Purchased house" or house_type == "All" else 0],
+        "Particuliere_huur": [1 if house_type == "Private rent" or house_type == "All" else 0],
+        "gebiedscode": [connection.execute(f"SELECT gebiedscode FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first().gebiedscode],
+        "VCRIMIN_I": [crime],
+        "Woningdichtheid": [neighbourhood_data.Woningdichtheid],
+        "Culturele_voorzieningen": [facilities],
+        "Aanbod_basisscholen": [facilities],
+        "Woonoppervlak_0_40": [1 if (number_m >= 0 and number_m < 40) else 0],
+        "Woonoppervlak_40_60": [1 if (number_m >= 40 and number_m < 60) else 0],
+        "Woonoppervlak_60_80": [1 if (number_m >= 60 and number_m < 80) else 0],
+        "Woonoppervlak_80_100": [1 if (number_m >= 80 and number_m < 100) else 0],
+        "Woonoppervlak_100_plus": [1 if (number_m >= 100) else 0],
+    }
 
-#     prices = amsterdam_data["WOZ_per_M2"]
-#     features = amsterdam_data.drop(["WOZ_per_M2", "index", "niveau", "niveaunaam", "wijkcode", "gebiedcodenaam"], axis=1)
-#     features = features.apply(pd.to_numeric, errors="coerce")
+    data = pd.DataFrame(client_data)
 
-#     # Import 'train_test_split'
-#     from sklearn.model_selection import train_test_split
+    # st.write(data)
 
-#     # Shuffle and split the data into training and testing subsets
-#     X_train, X_test, y_train, y_test = train_test_split(features, prices, test_size=0.2, random_state=42)
-#     # start most important step: Counting the words
-#     from sklearn.feature_extraction.text import CountVectorizer
+    model = loadModel()
+    pred = model.predict(data)
 
-#     cv = CountVectorizer(binary=False)
-#     X_train_cv = cv.fit_transform(X_train)
-#     X_test_cv = cv.transform(X_test)
-
-#     # X_trainX = X_train.transpose()
-#     st.write(f"Test: {X_train.head(5)}")
-#     st.write(f"Test: {y_train.head(5)}")
-
-#     reg = fit_model(X_train_cv, y_train)
-
-#     st.write("Parameter 'max_depth' is {} for the optimal model.".format(reg.get_params()["max_depth"]))
-
-#     st.write("Amsterdam housing dataset has {} data points with {} variables each.".format(*amsterdam_data.shape))
-
-
-# from sklearn.metrics import r2_score
-
-
-# def performance_metric(y_true, y_predict):
-
-#     # Calculates and returns the performance score between
-#     # true (y_true) and predicted (y_predict) values based on the metric chosen.
-
-#     score = r2_score(y_true, y_predict)
-
-#     # Return the score
-#     return score
-
-
-# # Import 'make_scorer', 'DecisionTreeRegressor', and 'GridSearchCV'
-# from sklearn.tree import DecisionTreeRegressor
-# from sklearn.metrics import make_scorer
-# from sklearn.model_selection import GridSearchCV
-# from sklearn.model_selection import ShuffleSplit
-
-
-# def fit_model(X, y):
-
-#     # Performs grid search over the 'max_depth' parameter for a
-#     # decision tree regressor trained on the input data [X, y].
-
-#     # Create cross-validation sets from the training data
-#     cv_sets = ShuffleSplit(n_splits=10, test_size=0.20, random_state=0)
-
-#     # Create a decision tree regressor object0
-#     regressor = DecisionTreeRegressor()
-
-#     # Create a dictionary for the parameter 'max_depth' with a range from 1 to 10
-#     params = {"max_depth": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-
-#     # Transform 'performance_metric' into a scoring function using 'make_scorer'
-#     scoring_fnc = make_scorer(performance_metric)
-
-#     # Create the grid search cv object --> GridSearchCV()
-#     grid = GridSearchCV(estimator=regressor, param_grid=params, cv=cv_sets, scoring=scoring_fnc)
-
-#     # Fit the grid search object to the data to compute the optimal model
-#     grid = grid.fit(X, y)
-
-#     # Return the optimal model after fitting the data
-#     return grid.best_estimator_
+    return pred

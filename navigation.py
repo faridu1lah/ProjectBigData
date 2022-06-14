@@ -63,4 +63,6 @@ def load():
         prediction.load_view()
 
     if selected == "Contact":
-        st.title(f"You have selected {selected}")
+        from views import contact
+
+        contact.load_view()
