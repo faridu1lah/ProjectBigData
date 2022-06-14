@@ -37,7 +37,7 @@ def load_view():
             "WOZ_per_M2": "WOZ value per square meters",
             "jaar": "Year",
             "wijkcode": "Neighbourhood code",
-            "VCRIMIN_I": "Crime encounters",
+            "VCRIMIN_I": "Crime",
             "gebiedcodenaam": "Neighbourhood name",
         }
     )
@@ -46,7 +46,7 @@ def load_view():
         amsterdam_data,
         x="WOZ value per square meters",
         y="Year",
-        color="Crime encounters",
+        color="Crime",
         size="WOZ value per square meters",
         hover_data=["Neighbourhood name"],
     )
@@ -86,5 +86,5 @@ def load_view():
     col1, col2 = st.columns(2)
 
     # Placing both bar charts in 2 columns respectively
-    col1.plotly_chart(avgPricePerArea)
-    col2.plotly_chart(avgPricePerAreaPerM2)
+    col1.plotly_chart(avgPricePerArea, use_container_width=True)
+    col2.plotly_chart(avgPricePerAreaPerM2, use_container_width=True)
