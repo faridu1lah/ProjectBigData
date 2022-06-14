@@ -1,3 +1,7 @@
+from requests import head
+from sqlalchemy import values
+
+
 def load_view():
     import streamlit as st
     import pandas as pd
@@ -5,22 +9,46 @@ def load_view():
 
     st.title(f"Welcome by house prediction!")
 
+    st.markdown("### WOZ value per square meters in neighbourhood(s)")
+
     # Reading all data
     from db import connection
 
-    amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 IS NOT NULL", con=connection)
+    neighbourhood_data = pd.read_sql("SELECT gebiedcodenaam FROM amsterdam GROUP BY gebiedcodenaam", con=connection)
+
+    # neighbourhood
+    neighbourhood = st.multiselect(
+        "Select a neighbourhood:",
+        neighbourhood_data,
+        [
+            "AA Haarlemmerbuurt",
+            "AB Jordaan",
+            "AE Burgwallen-Oude Zijde",
+            "AD Burgwallen-Nieuwe Zijde",
+        ],
+    )
+    neighbourhoods = "','".join(neighbourhood)
+
+    sql = f"SELECT * FROM amsterdam WHERE WOZ_per_M2 > 0 AND gebiedcodenaam IN ('{neighbourhoods}')"
+
+    amsterdam_data = pd.read_sql(sql, con=connection)
     amsterdam_data = amsterdam_data.rename(
-        columns={"WOZ_per_M2": "WOZ waarde per vierkante meter!", "jaar": "Jaar", "wijkcode": "Wijkcode", "gebiedcodenaam": "Gebiedcodenaam"}
+        columns={
+            "WOZ_per_M2": "WOZ value per square meters",
+            "jaar": "Year",
+            "wijkcode": "Neighbourhood code",
+            "VCRIMIN_I": "Crime encounters",
+            "gebiedcodenaam": "Neighbourhood name",
+        }
     )
 
     fig = px.scatter(
         amsterdam_data,
-        x="WOZ waarde per vierkante meter!",
-        y="Wijkcode",
-        color="Jaar",
-        size="WOZ waarde per vierkante meter!",
-        hover_data=["WOZ waarde per vierkante meter!", "Gebiedcodenaam"],
-        title="WOZ waarde per vierkante meter per wijk",
+        x="WOZ value per square meters",
+        y="Year",
+        color="Crime encounters",
+        size="WOZ value per square meters",
+        hover_data=["Neighbourhood name"],
     )
 
     st.plotly_chart(fig, use_container_width=True)
@@ -38,7 +66,11 @@ def load_view():
 
     # Creating a bar chart for average per area
     avgPricePerArea = px.bar(
-        wozPerArea, x=wozPerArea.columns[0], y=wozPerArea.columns[1], title="<b>Gemiddelde WOZ-waarde per gebied</b>", template="plotly_white"
+        wozPerArea,
+        x=wozPerArea.columns[0],
+        y=wozPerArea.columns[1],
+        title="<b>Gemiddelde WOZ-waarde per gebied</b>",
+        template="plotly_white",
     )
 
     # Creating a bar chart for average per are per M^2

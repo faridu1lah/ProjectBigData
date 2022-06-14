@@ -5,7 +5,8 @@ from db import connection
 
 def load_view():
 
-    st.markdown("## Predicting house prices in Amsterdam")
+    st.title("Predicting house prices in Amsterdam")
+
     # with st.form(key="my_form"):
 
     c1, c2 = st.columns([1, 5])
@@ -17,7 +18,7 @@ def load_view():
 
         amsterdam_data = pd.read_sql("SELECT gebiedcodenaam FROM amsterdam GROUP BY gebiedcodenaam", con=connection)
 
-        # House type
+        # neighbourhood
         neighbourhood = st.selectbox("Your new neighbourhood:", amsterdam_data)
 
         # House type
@@ -42,8 +43,8 @@ def load_view():
 
         submit_button = st.button(label="🏠 Predict House Price!")
 
-        if submit_button == True:
-            st.write("Your info: ", neighbourhood, house_type, number_m, crime, facilities)
+        # if submit_button == True:
+        #     st.write("Your info: ", neighbourhood, house_type, number_m, crime, facilities)
 
     with c2:
 
@@ -66,19 +67,19 @@ def predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhoo
     import pandas as pd
 
     client_data = {
-        "Corporatiewoningen": [1 if house_type == "Housing associations" or house_type == "All" else 0],
-        "Koopwoninging": [1 if house_type == "Purchased house" or house_type == "All" else 0],
-        "Particuliere_huur": [1 if house_type == "Private rent" or house_type == "All" else 0],
+        "Corporatiewoningen": [100 if house_type == "Housing associations" or house_type == "All" else 0],
+        "Koopwoninging": [100 if house_type == "Purchased house" or house_type == "All" else 0],
+        "Particuliere_huur": [100 if house_type == "Private rent" or house_type == "All" else 0],
         "gebiedscode": [connection.execute(f"SELECT gebiedscode FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first().gebiedscode],
         "VCRIMIN_I": [crime],
         "Woningdichtheid": [neighbourhood_data.Woningdichtheid],
         "Culturele_voorzieningen": [facilities],
         "Aanbod_basisscholen": [facilities],
-        "Woonoppervlak_0_40": [1 if (number_m >= 0 and number_m < 40) else 0],
-        "Woonoppervlak_40_60": [1 if (number_m >= 40 and number_m < 60) else 0],
-        "Woonoppervlak_60_80": [1 if (number_m >= 60 and number_m < 80) else 0],
-        "Woonoppervlak_80_100": [1 if (number_m >= 80 and number_m < 100) else 0],
-        "Woonoppervlak_100_plus": [1 if (number_m >= 100) else 0],
+        "Woonoppervlak_0_40": [100 if (number_m >= 0 and number_m < 40) else 0],
+        "Woonoppervlak_40_60": [100 if (number_m >= 40 and number_m < 60) else 0],
+        "Woonoppervlak_60_80": [100 if (number_m >= 60 and number_m < 80) else 0],
+        "Woonoppervlak_80_100": [100 if (number_m >= 80 and number_m < 100) else 0],
+        "Woonoppervlak_100_plus": [100 if (number_m >= 100) else 0],
     }
 
     data = pd.DataFrame(client_data)
