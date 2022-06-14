@@ -103,5 +103,5 @@ def checkDatabase():
         data = getData()
         latLonData = getGeoInfo()
 
-        data.to_sql(name="amsterdam", con=connection, if_exists="replace", index=True, chunksize=1000)
-        latLonData.to_sql(name="geo_info", con=connection, if_exists="replace", index=True, chunksize=1000)
+        data.to_sql(name="amsterdam", con=connection, if_exists="replace", index=False, chunksize=1000)
+        latLonData.to_sql(name="geo_info", con=connection, if_exists="replace", index=False, chunksize=1000)
