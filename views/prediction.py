@@ -57,48 +57,77 @@ def load_view():
             nu = round((pre[0] * number_m), 2)
             st.write(pre[0])
             st.metric(label="Your new house will cost you about : € ", value=nu, delta=pre[0])
-            
 
-       
         amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
 
-        st.map(amsterdam_data)
-        
-        st.pydeck_chart(pdk.Deck(
-            map_style='mapbox://styles/mapbox/light-v9',
-            #initial_view_state=pdk.ViewState( latitude=4.89021995, longitude=-52.3837291 , zoom=11, pitch=50, ),
-            initial_view_state=pdk.ViewState(
-                longitude=4.897070,
-                latitude=52.377956,
-                zoom=11,
-                pitch=50,),
-            layers=[
-                pdk.Layer(
-                'GridLayer',
-                data=amsterdam_data,
-                get_position='[lon, lat]',
-                radius=100,
-                width_scale=20, width_min_pixels=2,
-                auto_highlight=True,
-                elevation_scale=1,
-                elevation_range=[0, 1000],
-                pickable=True,
-                extruded=True,
+        # st.map(amsterdam_data)
+
+        # amsterdam_data
+
+        st.pydeck_chart(
+            pdk.Deck(
+                # map_style="mapbox://styles/mapbox/light-v9",
+                map_style="mapbox://styles/mapbox/navigation-day-v1",
+                # initial_view_state=pdk.ViewState( latitude=4.89021995, longitude=-52.3837291 , zoom=11, pitch=50, ),
+                initial_view_state=pdk.ViewState(
+                    longitude=4.897070,
+                    latitude=52.377956,
+                    zoom=10.5,
+                    pitch=50,
                 ),
-            # pdk.Layer(
-            #     'ScatterplotLayer',
-            #     data=amsterdam_data,
-            #     get_position='[lon, lat]',
-            #     get_color='[200, 30, 0, 160]',
-            #     get_radius=200,
-            #     ),
-            ],
-        ))
-      
-        test = amsterdam_data["WOZ_per_M2"]
-        print(test)
-        st.markdown("test")
-       
+                layers=[
+                    pdk.Layer(
+                        # "HexagonLayer",
+                        # data=amsterdam_data,
+                        # get_position="[lon, lat]",
+                        # radius=500,
+                        # width_scale=20,
+                        # auto_highlight=True,
+                        # elevation_scale=2,
+                        # elevation_range=[0, 1000],
+                        # pickable=True,
+                        # extruded=True,
+                        # wireframe=True,
+                        # coverage=1,
+                        "PolygonLayer",
+                        data=amsterdam_data,
+                        id="geojson",
+                        opacity=0.8,
+                        stroked=False,
+                        get_polygon="coordinates",
+                        filled=True,
+                        extruded=True,
+                        wireframe=True,
+                        getWidth=0.01,
+                        getLineWidth=0.01,
+                        get_elevation="WOZ_per_M2",
+                        get_fill_color="WOZ_per_M2",
+                        get_line_color=[255, 255, 255],
+                        auto_highlight=True,
+                        pickable=True,
+                    ),
+                    # pdk.Layer(
+                    #     "ScatterplotLayer",
+                    #     data=amsterdam_data,
+                    #     get_position="[lon, lat]",
+                    #     get_color="[200, 30, 0, 160]",
+                    #     get_radius=200,
+                    # ),
+                ],
+                tooltip={
+                    "html": "Elevation Value: {WOZ_per_M2}",
+                    # "style": {
+                    #     "backgroundColor": "gray",
+                    #     "color": "white",
+                    # },
+                },
+            )
+        )
+
+        # test = amsterdam_data["WOZ_per_M2"]
+        # print(test)
+        # st.markdown("test")
+
     if not submit_button:
         st.stop()
 

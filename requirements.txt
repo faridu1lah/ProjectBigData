@@ -10,3 +10,4 @@ openpyxl
 sklearn
 python-pptx
 pybase64
+shapely

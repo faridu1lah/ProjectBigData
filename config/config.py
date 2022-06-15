@@ -3,6 +3,6 @@ mysql = {
     "host": "localhost",
     "user": "root",
     "pas": "root",
-    "db": "big-data",
+    "db": "big_data",
     "port": "3306",
 }

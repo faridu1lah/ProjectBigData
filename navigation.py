@@ -82,7 +82,7 @@ def checkDatabase():
         from cleaning import getData, getGeoInfo
 
         data = getData()
-        latLonData = getGeoInfo()
+        geoData = getGeoInfo()
 
         data.to_sql(name="amsterdam", con=connection, if_exists="replace", index=False, chunksize=1000)
-        latLonData.to_sql(name="geo_info", con=connection, if_exists="replace", index=False, chunksize=1000)
+        geoData.to_sql(name="geo_info", con=connection, if_exists="replace", index=False, chunksize=1000)
