@@ -44,11 +44,12 @@ def load_view():
 
     fig = px.scatter(
         amsterdam_data,
-        x="WOZ value per square meters",
-        y="Year",
-        color="Crime",
+        x="Year",
+        y="WOZ value per square meters",
+        color="Woningdichtheid",
         size="WOZ value per square meters",
         hover_data=["Neighbourhood name"],
+        color_continuous_scale='Bluered'
     )
 
     st.plotly_chart(fig, use_container_width=True)
