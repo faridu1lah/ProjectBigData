@@ -26,6 +26,9 @@ def load_view():
         house_type = st.selectbox("Type Of house:", ("All", "Housing associations", "Private rent", "Purchased house"))
         # st.write("You selected:", house_type)
 
+        # # number square meters
+        # year = st.number_input("Prediction for Year", step=1, value=date.today().year)
+
         # number square meters
         number_m = st.number_input("Square meters:", step=1, value=60)
         # st.write("The current number is ", number_m)
@@ -57,10 +60,9 @@ def load_view():
                 st.session_state["last_price"] = 0
 
             pre = predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data)
-            st.markdown(f"#### 🏠 Your new house will cost you about : ")
             price = round((pre[0] * number_m), 2)
 
-            st.metric(label="", value=f"€ {price}", delta=(pre[0] - st.session_state["last_price"]))
+            st.metric(label="", value=f"🏠 Your new house will cost you about: € {price}", delta=(pre[0] - st.session_state["last_price"]))
 
             st.session_state["last_price"] = pre[0]
 
@@ -95,38 +97,8 @@ def load_view():
                         extruded=True,
                         wireframe=True,
                         coverage=1,
-                        # "PolygonLayer",
-                        # data=amsterdam_data,
-                        # id="geojson",
-                        # opacity=0.8,
-                        # stroked=False,
-                        # get_polygon="coordinates",
-                        # filled=True,
-                        # extruded=True,
-                        # wireframe=True,
-                        # getWidth=0.01,
-                        # getLineWidth=0.01,
-                        # get_elevation="WOZ_per_M2",
-                        # get_fill_color="WOZ_per_M2",
-                        # get_line_color=[255, 255, 255],
-                        # auto_highlight=True,
-                        # pickable=True,
                     ),
-                    # pdk.Layer(
-                    #     "ScatterplotLayer",
-                    #     data=amsterdam_data,
-                    #     get_position="[lon, lat]",
-                    #     get_color="[200, 30, 0, 160]",
-                    #     get_radius=200,
-                    # ),
                 ],
-                # tooltip={
-                #     "html": "Elevation Value: {WOZ_per_M2}",
-                #     # "style": {
-                #     #     "backgroundColor": "gray",
-                #     #     "color": "white",
-                #     # },
-                # },
             )
         )
 
@@ -141,11 +113,13 @@ def load_view():
 def predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data):
     from model import loadModel
     import pandas as pd
+    from datetime import date
 
     client_data = {
-        "Corporatiewoningen": [100 if house_type == "Housing associations" or house_type == "All" else 0],
-        "Koopwoninging": [100 if house_type == "Purchased house" or house_type == "All" else 0],
-        "Particuliere_huur": [100 if house_type == "Private rent" or house_type == "All" else 0],
+        "jaar": date.today().year,
+        "Corporatiewoningen": [70 if house_type == "Housing associations" or house_type == "All" else 0],
+        "Koopwoninging": [70 if house_type == "Purchased house" or house_type == "All" else 0],
+        "Particuliere_huur": [70 if house_type == "Private rent" or house_type == "All" else 0],
         "gebiedscode": [connection.execute(f"SELECT gebiedscode FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first().gebiedscode],
         "VCRIMIN_I": [crime],
         "Woningdichtheid": [neighbourhood_data.Woningdichtheid],

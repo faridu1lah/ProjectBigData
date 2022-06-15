@@ -1,28 +1,9 @@
 def create_model():
 
-    import pandas as pd
-    from db import connection
+    amsterdam_data = getData()
 
-    amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 > 0", con=connection)
-
-    features = [
-        "Corporatiewoningen",
-        "Koopwoninging",
-        "Particuliere_huur",
-        "gebiedscode",
-        "VCRIMIN_I",
-        "Woningdichtheid",
-        "Culturele_voorzieningen",
-        "Aanbod_basisscholen",
-        "Woonoppervlak_0_40",
-        "Woonoppervlak_40_60",
-        "Woonoppervlak_60_80",
-        "Woonoppervlak_80_100",
-        "Woonoppervlak_100_plus",
-    ]
-
-    y = amsterdam_data["WOZ_per_M2"]
-    X = amsterdam_data[features]
+    X = amsterdam_data["X"]
+    y = amsterdam_data["y"]
 
     from sklearn.model_selection import train_test_split
 
@@ -35,12 +16,12 @@ def create_model():
 
     model = loadModel()
 
-    p = model.predict(X_test)
+    p = reg.predict(X_test)
     print(p)
 
     print("Parameter 'max_depth' is {} for the optimal model.".format(model.get_params()["max_depth"]))
 
-    print("Amsterdam housing dataset has {} data points with {} variables each.".format(*amsterdam_data.shape))
+    print("Amsterdam housing dataset has {} data points with {} variables each.".format(*X.shape))
 
 
 def performance_metric(y_true, y_predict):
@@ -110,8 +91,8 @@ def getData():
     amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 > 0", con=connection)
 
     features = [
-        "Corporatiewoningen",
         "jaar",
+        "Corporatiewoningen",
         "Koopwoninging",
         "Particuliere_huur",
         "gebiedscode",
