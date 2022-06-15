@@ -53,13 +53,15 @@ def load_view():
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    from model import getData, model_complexity, model_learning
+    from model import getData, model_complexity, model_learning, train_and_display
 
     data = getData()
     chart1, chart2 = st.columns(2)
 
     chart1.pyplot(model_learning(data["X"], data["y"]), use_container_width=True)
     chart2.pyplot(model_complexity(data["X"], data["y"]), use_container_width=True)
+
+    # chart2.plotly_chart(train_and_display(data["X"], data["y"]), use_container_width=True)
 
     # charts
     woz = pd.read_excel("data/2021_jaarboek_stadsdeel_wozwaarde.xlsx")

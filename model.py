@@ -111,6 +111,7 @@ def getData():
 
     features = [
         "Corporatiewoningen",
+        "jaar",
         "Koopwoninging",
         "Particuliere_huur",
         "gebiedscode",
@@ -232,44 +233,32 @@ def model_learning(X, y):
     return fig
 
 
-# import plotly.plotly as py
-# from plotly.graph_objs import *
-# py.sign_in('username', 'api_key')
-# trace1 = {
-#   "line": {"color": "rgb(0,176,246)"},
-#   "mode": "lines+text+markers",
-#   "name": "TAN",
-#   "type": "scatter",
-#   "x": [25, 50, 100],
-#   "y": [0.5655, 0.6845, 0.8334],
-#   "text": [0.5655, 0.6845, 0.8334],
-#   "connectgaps": True,
-#   "textposition": "bottom"
-# }
-# trace2 = {
-#   "line": {"color": "rgb(231,107,243)"},
-#   "mode": "lines+text+markers",
-#   "name": "Naive Bayes",
-#   "type": "scatter",
-#   "x": [25, 50, 100],
-#   "y": [0.6072, 0.7798, 0.8571],
-#   "text": [0.6072, 0.7798, 0.8571],
-#   "connectgaps": True,
-#   "textposition": "top"
-# }
-# data = Data([trace1, trace2])
-# layout = {
-#   "title": "Learning Curve",
-#   "xaxis": {
-#     "range": [20, 105],
-#     "title": "Training Data Size",
-#     "zeroline": False
-#   },
-#   "yaxis": {
-#     "range": [0, 1],
-#     "title": "Accuracy Score",
-#     "zeroline": False
-#   }
-# }
-# fig = Figure(data=data, layout=layout)
-# plot_url = py.plot(fig)
+# models = {"Regression": linear_model.LinearRegression, "Decision Tree": tree.DecisionTreeRegressor, "k-NN": neighbors.KNeighborsRegressor}
+
+
+def display_plot(X, y):
+    import plotly.graph_objects as go
+
+    # df = px.data.tips()  # replace with your own data source
+    # X = df.total_bill.values[:, None]
+    # X_train, X_test, y_train, y_test = train_test_split(X, df.tip, random_state=42)
+
+    model = loadModel()
+
+    import streamlit as st
+
+    st.write(str(X.min().apply(lambda x: float(x)).sum()))
+
+    # x_range = np.linspace(X.min().apply(lambda x: float(x)).sum(), X.max().apply(lambda x: float(x)).sum(), 100)
+
+    # y_range = model.predict(x_range.reshape(-1, 1))
+
+    fig = go.Figure(
+        [
+            go.Scatter(x=X["jaar"], y=y, name="actual", mode="markers", color=""),
+            # go.Scatter(x=X_test.squeeze(), y=y_test, name="test", mode="markers"),
+            # go.Scatter(x=x_range, y=y_range, name="prediction"),
+        ]
+    )
+
+    return fig
