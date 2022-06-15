@@ -52,11 +52,17 @@ def load_view():
         st.markdown("### Check out the prices!")
 
         if submit_button == True:
+
+            if "last_price" not in st.session_state:
+                st.session_state["last_price"] = 0
+
             pre = predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data)
-            st.markdown(f"#### 🏠 Your new house will cost you about : € {round((pre[0] * number_m), 2)}")
-            nu = round((pre[0] * number_m), 2)
-            st.write(pre[0])
-            st.metric(label="Your new house will cost you about : € ", value=nu, delta=pre[0])
+            st.markdown(f"#### 🏠 Your new house will cost you about : ")
+            price = round((pre[0] * number_m), 2)
+
+            st.metric(label="", value=f"€ {price}", delta=(pre[0] - st.session_state["last_price"]))
+
+            st.session_state["last_price"] = pre[0]
 
         amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
 
@@ -72,7 +78,7 @@ def load_view():
                 initial_view_state=pdk.ViewState(
                     longitude=4.897070,
                     latitude=52.377956,
-                    zoom=10.5,
+                    zoom=10.3,
                     pitch=50,
                 ),
                 layers=[
