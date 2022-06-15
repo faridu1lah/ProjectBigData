@@ -103,6 +103,34 @@ def loadModel():
         return False
 
 
+def getData():
+    from db import connection
+    import pandas as pd
+
+    amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 > 0", con=connection)
+
+    features = [
+        "Corporatiewoningen",
+        "Koopwoninging",
+        "Particuliere_huur",
+        "gebiedscode",
+        "VCRIMIN_I",
+        "Woningdichtheid",
+        "Culturele_voorzieningen",
+        "Aanbod_basisscholen",
+        "Woonoppervlak_0_40",
+        "Woonoppervlak_40_60",
+        "Woonoppervlak_60_80",
+        "Woonoppervlak_80_100",
+        "Woonoppervlak_100_plus",
+    ]
+
+    y = amsterdam_data["WOZ_per_M2"]
+    X = amsterdam_data[features]
+
+    return {"X": X, "y": y}
+
+
 import matplotlib.pyplot as pl
 import numpy as np
 from sklearn.model_selection import learning_curve
@@ -117,7 +145,7 @@ def model_complexity(X, y):
     # The learning and testing errors rates are then plotted.
 
     # Create 10 cross-validation sets for training and testing
-    cv = ShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
+    cv = ShuffleSplit(n_splits=10, test_size=0.5, random_state=0)
 
     # Vary the max_depth parameter from 1 to 10
     max_depth = np.arange(1, 11)

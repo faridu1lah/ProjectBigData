@@ -79,7 +79,7 @@ def getGeoInfo():
     from shapely.geometry import Polygon
 
     raw = pd.read_csv("data/lat_and_lon.csv", on_bad_lines="skip", sep=";")
-    jsonData = pd.read_json("https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=INDELING_WIJK&THEMA=gebiedsindeling")
+    # jsonData = pd.read_json("https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=INDELING_WIJK&THEMA=gebiedsindeling")
 
     # pol = Polygon(
     #     [
