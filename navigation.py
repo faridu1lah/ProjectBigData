@@ -32,25 +32,37 @@ def navbar():
         orientation="horizontal",
         styles={
             "container": {
-                "padding": "2px 0 0 0 !important",
+                "padding": "0 !important",
                 "margin": "0",
                 "max-width": "100%",
                 "border-radius": "0",
                 "place-content": "space-between",
                 "flex-direction": "row !important",
             },
-            "icon": {"color": "#44A1B5", "font-size": "1em"},
+            "icon": {"color": "#44A1B5", "font-size": "1em", "margin-right": "1px"},
             "nav-item": {
                 "flex-grow": "unset",
                 "flex-basis": "unset",
             },
+            "nav": {
+                "margin": "0px !important",
+                "place-content": "center",
+            },
             "nav-link": {
                 "font-size": "1em",
                 "text-align": "left",
-                "margin": "0px",
+                "margin": "0px 1px",
+                "padding-left": "2px",
+                "padding-right": "2px",
             },
             "nav-link-selected": {"background-color": "#073045"},
-            "menu-title": {"margin": "0 1em", "align-self": "center", "font-weight": "bolder", "color": "#44A1B5", "white-space": "nowrap"},
+            "menu-title": {
+                "margin": "0",
+                "align-self": "center",
+                "font-weight": "bolder",
+                "color": "#44A1B5",
+                "white-space": "nowrap",
+            },
         },
     )
 
@@ -91,5 +103,5 @@ def checkDatabase():
         data = getData()
         latLonData = getGeoInfo()
 
-        data.to_sql(name="amsterdam", con=connection, if_exists="replace", index=True, chunksize=1000)
-        latLonData.to_sql(name="geo_info", con=connection, if_exists="replace", index=True, chunksize=1000)
+        data.to_sql(name="amsterdam", con=connection, if_exists="replace", index=False, chunksize=1000)
+        latLonData.to_sql(name="geo_info", con=connection, if_exists="replace", index=False, chunksize=1000)
