@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from db import connection
+import pydeck as pdk
 
 
 def load_view():
@@ -53,11 +54,51 @@ def load_view():
         if submit_button == True:
             pre = predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data)
             st.markdown(f"#### 🏠 Your new house will cost you about : € {round((pre[0] * number_m), 2)}")
+            nu = round((pre[0] * number_m), 2)
+            st.write(pre[0])
+            st.metric(label="Your new house will cost you about : € ", value=nu, delta=pre[0])
+            
 
+       
         amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
 
         st.map(amsterdam_data)
-
+        
+        st.pydeck_chart(pdk.Deck(
+            map_style='mapbox://styles/mapbox/light-v9',
+            #initial_view_state=pdk.ViewState( latitude=4.89021995, longitude=-52.3837291 , zoom=11, pitch=50, ),
+            initial_view_state=pdk.ViewState(
+                longitude=4.897070,
+                latitude=52.377956,
+                zoom=11,
+                pitch=50,),
+            layers=[
+                pdk.Layer(
+                'GridLayer',
+                data=amsterdam_data,
+                get_position='[lon, lat]',
+                radius=100,
+                width_scale=20, width_min_pixels=2,
+                auto_highlight=True,
+                elevation_scale=1,
+                elevation_range=[0, 1000],
+                pickable=True,
+                extruded=True,
+                ),
+            # pdk.Layer(
+            #     'ScatterplotLayer',
+            #     data=amsterdam_data,
+            #     get_position='[lon, lat]',
+            #     get_color='[200, 30, 0, 160]',
+            #     get_radius=200,
+            #     ),
+            ],
+        ))
+      
+        test = amsterdam_data["WOZ_per_M2"]
+        print(test)
+        st.markdown("test")
+       
     if not submit_button:
         st.stop()
 

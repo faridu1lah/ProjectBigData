@@ -1,4 +1,4 @@
-from views import home, prediction, contact
+from views import home, prediction, download
 import streamlit as st
 
 
@@ -16,9 +16,9 @@ def load():
 
         prediction.load_view()
 
-    if selected == "Contact":
+    if selected == "Download":
 
-        contact.load_view()
+        download.load_view()
 
 
 def navbar():
@@ -26,8 +26,8 @@ def navbar():
 
     return option_menu(
         menu_title="House",  # required
-        options=["Home", "Prediction", "Contact"],  # required
-        icons=["house", "book", "envelope"],  # optional
+        options=["Home", "Prediction", "Download"],  # required
+        icons=["house", "book", "download"],  # optional
         menu_icon="house",  # optional
         orientation="horizontal",
         styles={
@@ -60,8 +60,8 @@ def mob_navbar():
 
     return option_menu(
         menu_title="House",  # required
-        options=["Home", "Prediction", "Contact"],  # required
-        icons=["house", "book", "envelope"],  # optional
+        options=["Home", "Prediction", "Download"],  # required
+        icons=["house", "book", "download"],  # optional
         menu_icon="house",  # optional
         styles={
             "icon": {"color": "#44A1B5", "font-size": "25px"},
