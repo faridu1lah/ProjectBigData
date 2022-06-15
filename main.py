@@ -10,6 +10,7 @@ st.set_page_config(page_title="Big Data", layout="wide")
 st.markdown(
     """ 
     <style>
+         a, a:hover, a:link, a:visited{ all: unset;}
         .block-container {padding-bottom:1rem; }
         .main iframe[title="streamlit_option_menu.option_menu"] {position:fixed; top:0;right: 0;left: 0;width: 100%;z-index:9999999;}
         #MainMenu {visibility: hidden;}
