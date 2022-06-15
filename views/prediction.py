@@ -120,13 +120,13 @@ def load_view():
                     #     get_radius=200,
                     # ),
                 ],
-                tooltip={
-                    "html": "Elevation Value: {WOZ_per_M2}",
-                    # "style": {
-                    #     "backgroundColor": "gray",
-                    #     "color": "white",
-                    # },
-                },
+                # tooltip={
+                #     "html": "Elevation Value: {WOZ_per_M2}",
+                #     # "style": {
+                #     #     "backgroundColor": "gray",
+                #     #     "color": "white",
+                #     # },
+                # },
             )
         )
 
