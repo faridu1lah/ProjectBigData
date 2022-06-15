@@ -192,7 +192,7 @@ def model_learning(X, y):
     # Create the figure window
     pl.style.use("seaborn")
 
-    fig = pl.figure(figsize=(18, 5))
+    fig = pl.figure(figsize=(10, 15))
 
     # Create three different models based on max_depth
     for k, depth in enumerate([1, 3, 6, 10]):
@@ -210,7 +210,8 @@ def model_learning(X, y):
         test_mean = np.mean(test_scores, axis=1)
 
         # Subplot the learning curve
-        ax = fig.add_subplot(1, 4, k + 1)
+
+        ax = fig.add_subplot(4, 1, k + 1)
         ax.plot(sizes, train_mean, "o-", color="r", label="Training Score")
         ax.plot(sizes, test_mean, "o-", color="g", label="Testing Score")
         ax.fill_between(sizes, train_mean - train_std, train_mean + train_std, alpha=0.15, color="r")
@@ -224,8 +225,8 @@ def model_learning(X, y):
         ax.set_ylim([-0.05, 1.05])
 
     # Visual aesthetics
-    ax.legend(bbox_to_anchor=(0.5, 1.2), loc="lower left", borderaxespad=0.0)
-    fig.suptitle("Decision Tree Regressor Learning Performances", fontsize=16, y=0.8)
+    ax.legend(bbox_to_anchor=(0.5, 0), loc="upper left", borderaxespad=0.0)
+    fig.suptitle("Decision Tree Regressor Learning Performances", fontsize=16)
     fig.tight_layout()
     # fig.show()
 
