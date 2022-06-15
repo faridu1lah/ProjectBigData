@@ -53,7 +53,7 @@ def load_view():
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    from model import getData, model_complexity, model_learning, train_and_display
+    from model import getData, model_complexity, model_learning, display_plot
 
     data = getData()
     chart1, chart2 = st.columns(2)
