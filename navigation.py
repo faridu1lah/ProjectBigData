@@ -1,7 +1,7 @@
-from views import home, prediction, download
+from views import home, info, prediction
 import streamlit as st
 
-
+# load view
 def load():
 
     checkDatabase()
@@ -16,23 +16,24 @@ def load():
 
         prediction.load_view()
 
-    if selected == "Download":
+    if selected == "Info":
 
-        download.load_view()
+        info.load_view()
 
 
+# custom navbar
 def navbar():
     from streamlit_option_menu import option_menu
 
     return option_menu(
         menu_title="House",  # required
-        options=["Home", "Prediction", "Download"],  # required
-        icons=["house", "book", "download"],  # optional
+        options=["Home", "Prediction", "Info"],  # required
+        icons=["house", "book", "info-circle"],  # optional
         menu_icon="house",  # optional
         orientation="horizontal",
         styles={
             "container": {
-                "padding": "0 !important",
+                "padding": "0 3px !important",
                 "margin": "0",
                 "max-width": "100%",
                 "border-radius": "0",
@@ -52,8 +53,8 @@ def navbar():
                 "font-size": "1em",
                 "text-align": "left",
                 "margin": "0px 1px",
-                "padding-left": "2px",
-                "padding-right": "2px",
+                "padding-left": "3px",
+                "padding-right": "3px",
             },
             "nav-link-selected": {"background-color": "#073045"},
             "menu-title": {
@@ -67,27 +68,7 @@ def navbar():
     )
 
 
-def mob_navbar():
-    from streamlit_option_menu import option_menu
-
-    return option_menu(
-        menu_title="House",  # required
-        options=["Home", "Prediction", "Download"],  # required
-        icons=["house", "book", "download"],  # optional
-        menu_icon="house",  # optional
-        styles={
-            "icon": {"color": "#44A1B5", "font-size": "25px"},
-            "nav-link": {
-                "font-size": "25px",
-                "text-align": "left",
-                "margin": "0px",
-            },
-            "nav-link-selected": {"background-color": "#073045"},
-            "menu-title": {"margin": "0 2em", "align-self": "center", "font-weight": "bolder", "color": "#44A1B5", "white-space": "nowrap"},
-        },
-    )
-
-
+# update database from csv
 def checkDatabase():
 
     params = st.experimental_get_query_params()

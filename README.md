@@ -8,6 +8,7 @@ streamlit run main.py
 
 # download packages
 python3 -m pip install -r requirements.txt
+python3 -m pip uninstall <package>
 ```
 
 ## Git an GitHub

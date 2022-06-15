@@ -8,3 +8,5 @@ sqlalchemy
 plotly
 openpyxl
 sklearn
+python-pptx
+pybase64
