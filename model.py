@@ -162,7 +162,7 @@ def model_complexity(X, y):
     # Plot the validation curve
     pl.style.use("seaborn")
 
-    pl.figure(figsize=(7, 5))
+    pl.figure(figsize=(7, 3))
     pl.title("Decision Tree Regressor Complexity Performance")
     pl.plot(max_depth, train_mean, "o-", color="r", label="Training Score")
     pl.plot(max_depth, test_mean, "o-", color="g", label="Validation Score")
@@ -192,7 +192,7 @@ def model_learning(X, y):
     # Create the figure window
     pl.style.use("seaborn")
 
-    fig = pl.figure(figsize=(18, 5))
+    fig = pl.figure(figsize=(10, 15))
 
     # Create three different models based on max_depth
     for k, depth in enumerate([1, 3, 6, 10]):
@@ -210,7 +210,7 @@ def model_learning(X, y):
         test_mean = np.mean(test_scores, axis=1)
 
         # Subplot the learning curve
-        ax = fig.add_subplot(1, 4, k + 1)
+        ax = fig.add_subplot(4, 1, k + 1)
         ax.plot(sizes, train_mean, "o-", color="r", label="Training Score")
         ax.plot(sizes, test_mean, "o-", color="g", label="Testing Score")
         ax.fill_between(sizes, train_mean - train_std, train_mean + train_std, alpha=0.15, color="r")
@@ -222,11 +222,54 @@ def model_learning(X, y):
         ax.set_ylabel("Score")
         ax.set_xlim([0, X.shape[0] * 0.8])
         ax.set_ylim([-0.05, 1.05])
+        ax.legend(borderaxespad=0.0)
 
     # Visual aesthetics
-    ax.legend(bbox_to_anchor=(0.5, 1.2), loc="lower left", borderaxespad=0.0)
-    fig.suptitle("Decision Tree Regressor Learning Performances", fontsize=16, y=0.8)
+    fig.suptitle("Decision Tree Regressor Learning Performances", fontsize=14, y=1)
     fig.tight_layout()
     # fig.show()
 
     return fig
+
+
+# import plotly.plotly as py
+# from plotly.graph_objs import *
+# py.sign_in('username', 'api_key')
+# trace1 = {
+#   "line": {"color": "rgb(0,176,246)"},
+#   "mode": "lines+text+markers",
+#   "name": "TAN",
+#   "type": "scatter",
+#   "x": [25, 50, 100],
+#   "y": [0.5655, 0.6845, 0.8334],
+#   "text": [0.5655, 0.6845, 0.8334],
+#   "connectgaps": True,
+#   "textposition": "bottom"
+# }
+# trace2 = {
+#   "line": {"color": "rgb(231,107,243)"},
+#   "mode": "lines+text+markers",
+#   "name": "Naive Bayes",
+#   "type": "scatter",
+#   "x": [25, 50, 100],
+#   "y": [0.6072, 0.7798, 0.8571],
+#   "text": [0.6072, 0.7798, 0.8571],
+#   "connectgaps": True,
+#   "textposition": "top"
+# }
+# data = Data([trace1, trace2])
+# layout = {
+#   "title": "Learning Curve",
+#   "xaxis": {
+#     "range": [20, 105],
+#     "title": "Training Data Size",
+#     "zeroline": False
+#   },
+#   "yaxis": {
+#     "range": [0, 1],
+#     "title": "Accuracy Score",
+#     "zeroline": False
+#   }
+# }
+# fig = Figure(data=data, layout=layout)
+# plot_url = py.plot(fig)

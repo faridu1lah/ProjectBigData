@@ -42,14 +42,14 @@ def load_view():
         }
     )
 
-    fig = px.scatter(
+    fig = px.line(
         amsterdam_data,
         x="Year",
         y="WOZ value per square meters",
-        color="Woningdichtheid",
-        size="WOZ value per square meters",
+        color="Neighbourhood name",
+        # size="WOZ value per square meters",
         hover_data=["Neighbourhood name"],
-        color_continuous_scale="Bluered",
+        # color_continuous_scale='Bluered'
     )
 
     st.plotly_chart(fig, use_container_width=True)
