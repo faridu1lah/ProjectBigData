@@ -111,6 +111,7 @@ def getData():
 
     features = [
         "Corporatiewoningen",
+        "jaar",
         "Koopwoninging",
         "Particuliere_huur",
         "gebiedscode",
@@ -162,7 +163,7 @@ def model_complexity(X, y):
     # Plot the validation curve
     pl.style.use("seaborn")
 
-    pl.figure(figsize=(7, 5))
+    pl.figure(figsize=(7, 3))
     pl.title("Decision Tree Regressor Complexity Performance")
     pl.plot(max_depth, train_mean, "o-", color="r", label="Training Score")
     pl.plot(max_depth, test_mean, "o-", color="g", label="Validation Score")
@@ -210,7 +211,6 @@ def model_learning(X, y):
         test_mean = np.mean(test_scores, axis=1)
 
         # Subplot the learning curve
-
         ax = fig.add_subplot(4, 1, k + 1)
         ax.plot(sizes, train_mean, "o-", color="r", label="Training Score")
         ax.plot(sizes, test_mean, "o-", color="g", label="Testing Score")
@@ -223,11 +223,42 @@ def model_learning(X, y):
         ax.set_ylabel("Score")
         ax.set_xlim([0, X.shape[0] * 0.8])
         ax.set_ylim([-0.05, 1.05])
+        ax.legend(borderaxespad=0.0)
 
     # Visual aesthetics
-    ax.legend(bbox_to_anchor=(0.5, 0), loc="upper left", borderaxespad=0.0)
-    fig.suptitle("Decision Tree Regressor Learning Performances", fontsize=16)
+    fig.suptitle("Decision Tree Regressor Learning Performances", fontsize=14, y=1)
     fig.tight_layout()
     # fig.show()
+
+    return fig
+
+
+# models = {"Regression": linear_model.LinearRegression, "Decision Tree": tree.DecisionTreeRegressor, "k-NN": neighbors.KNeighborsRegressor}
+
+
+def display_plot(X, y):
+    import plotly.graph_objects as go
+
+    # df = px.data.tips()  # replace with your own data source
+    # X = df.total_bill.values[:, None]
+    # X_train, X_test, y_train, y_test = train_test_split(X, df.tip, random_state=42)
+
+    model = loadModel()
+
+    import streamlit as st
+
+    st.write(str(X.min().apply(lambda x: float(x)).sum()))
+
+    # x_range = np.linspace(X.min().apply(lambda x: float(x)).sum(), X.max().apply(lambda x: float(x)).sum(), 100)
+
+    # y_range = model.predict(x_range.reshape(-1, 1))
+
+    fig = go.Figure(
+        [
+            go.Scatter(x=X["jaar"], y=y, name="actual", mode="markers", color=""),
+            # go.Scatter(x=X_test.squeeze(), y=y_test, name="test", mode="markers"),
+            # go.Scatter(x=x_range, y=y_range, name="prediction"),
+        ]
+    )
 
     return fig
