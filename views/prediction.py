@@ -122,9 +122,9 @@ def predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhoo
 
     client_data = {
         "jaar": date.today().year,
-        "Corporatiewoningen": [70 if house_type == "Housing associations" or house_type == "All" else 0],
-        "Koopwoninging": [70 if house_type == "Purchased house" or house_type == "All" else 0],
-        "Particuliere_huur": [70 if house_type == "Private rent" or house_type == "All" else 0],
+        "Corporatiewoningen": [100 if house_type == "Housing associations" or house_type == "All" else 0],
+        "Koopwoninging": [100 if house_type == "Purchased house" or house_type == "All" else 0],
+        "Particuliere_huur": [100 if house_type == "Private rent" or house_type == "All" else 0],
         "gebiedscode": [connection.execute(f"SELECT gebiedscode FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first().gebiedscode],
         "VCRIMIN_I": [crime],
         "Woningdichtheid": [neighbourhood_data.Woningdichtheid],
