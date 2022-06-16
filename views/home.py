@@ -53,13 +53,19 @@ def load_view():
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    from model import getData, model_complexity, model_learning, display_plot
 
-    data = getData()
     chart1, chart2 = st.columns(2)
 
-    chart1.pyplot(model_learning(data["X"], data["y"]), use_container_width=True)
-    chart2.pyplot(model_complexity(data["X"], data["y"]), use_container_width=True)
+    from PIL import Image
+
+    charts = Image.open("data/charts.png")
+    complexity = Image.open("data/complexity.png")
+
+    chart1.image(charts)
+    chart2.image(complexity)
+
+    # chart1.pyplot(model_learning(data["X"], data["y"]), use_container_width=True)
+    # chart2.pyplot(model_complexity(data["X"], data["y"]), use_container_width=True)
 
     # chart2.plotly_chart(train_and_display(data["X"], data["y"]), use_container_width=True)
 
