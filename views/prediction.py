@@ -10,7 +10,7 @@ def load_view():
 
     # with st.form(key="my_form"):
 
-    c1, c2 = st.columns([1, 5])
+    c1, c2, c3 = st.columns([1, 2, 3])
 
     with c1:
 
@@ -25,9 +25,6 @@ def load_view():
         # House type
         house_type = st.selectbox("Type Of house:", ("All", "Housing associations", "Private rent", "Purchased house"))
         # st.write("You selected:", house_type)
-
-        # # number square meters
-        # year = st.number_input("Prediction for Year", step=1, value=date.today().year)
 
         # number square meters
         number_m = st.number_input("Square meters:", step=1, value=60)
@@ -52,7 +49,7 @@ def load_view():
 
     with c2:
 
-        st.markdown("### Check out the prices!")
+        st.markdown("### Check out the price!")
 
         if submit_button == True:
 
@@ -62,9 +59,21 @@ def load_view():
             pre = predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data)
             price = round((pre[0] * number_m), 2)
 
-            st.metric(label="", value=f"🏠 Your new house will cost you about: € {price}", delta=(pre[0] - st.session_state["last_price"]))
+            st.markdown("#### 🏠 Your new house will cost you about:")
+
+            st.metric(label="", value=f"€ {price}", delta=(pre[0] - st.session_state["last_price"]))
 
             st.session_state["last_price"] = pre[0]
+
+        from model import display_plot, getData
+
+        data = getData()
+
+        c2.plotly_chart(display_plot(data["X"], data["y"]), use_container_width=True)
+
+    with c3:
+
+        st.markdown("### Check out the Neighbourhood!")
 
         amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
 
@@ -101,10 +110,6 @@ def load_view():
                 ],
             )
         )
-
-        # test = amsterdam_data["WOZ_per_M2"]
-        # print(test)
-        # st.markdown("test")
 
     if not submit_button:
         st.stop()

@@ -220,26 +220,35 @@ def model_learning(X, y):
 def display_plot(X, y):
     import plotly.graph_objects as go
 
-    # df = px.data.tips()  # replace with your own data source
-    # X = df.total_bill.values[:, None]
-    # X_train, X_test, y_train, y_test = train_test_split(X, df.tip, random_state=42)
+    # Create 10 cross-validation sets for training and testing
+    cv = ShuffleSplit(n_splits=10, test_size=0.5, random_state=0)
 
-    model = loadModel()
+    # Vary the max_depth parameter from 1 to 10
+    max_depth = np.arange(1, 11)
 
-    import streamlit as st
+    # Calculate the training and testing scores
+    train_scores, test_scores = validation_curve(DecisionTreeRegressor(), X, y, param_name="max_depth", param_range=max_depth, cv=cv, scoring="r2")
 
-    st.write(str(X.min().apply(lambda x: float(x)).sum()))
+    # Find the mean and standard deviation for smoothing
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
 
-    # x_range = np.linspace(X.min().apply(lambda x: float(x)).sum(), X.max().apply(lambda x: float(x)).sum(), 100)
-
-    # y_range = model.predict(x_range.reshape(-1, 1))
+    # ['none', 'tozeroy', 'tozerox', 'tonexty', 'tonextx', 'toself', 'tonext']
 
     fig = go.Figure(
         [
-            go.Scatter(x=X["jaar"], y=y, name="actual", mode="markers", color=""),
-            # go.Scatter(x=X_test.squeeze(), y=y_test, name="test", mode="markers"),
-            # go.Scatter(x=x_range, y=y_range, name="prediction"),
-        ]
+            go.Scatter(x=max_depth, y=train_mean, name="Training score", fill="tozeroy"),
+            go.Scatter(x=max_depth, y=test_mean, name="Validation Score", fill="tozeroy"),
+        ],
+        layout={
+            "title": {"text": "Model complexity"},
+            "xaxis": {"title": {"text": "Number of Training Points"}},
+            "yaxis": {"title": {"text": "Score"}},
+        },
     )
+
+    # fig.update_layout(title_text="Some")
 
     return fig
