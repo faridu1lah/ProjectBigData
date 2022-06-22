@@ -1,35 +1,65 @@
+import pickle
+
+import matplotlib.pyplot as pl
+import numpy as np
+import pandas as pd
+from sklearn import metrics
+from sklearn.linear_model import LinearRegression
+import plotly.graph_objects as go
+import streamlit as st
+from sklearn.metrics import make_scorer, r2_score
+from sklearn.model_selection import (GridSearchCV, ShuffleSplit,
+                                     learning_curve, train_test_split,
+                                     validation_curve)
+from sklearn.tree import DecisionTreeRegressor
+
+from db import connection
+
+
 def create_model():
 
-    amsterdam_data = getData()
+
+    amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 > 0", con=connection)
+
+    features = [
+        "jaar",
+        "WWOZ_PREV1",
+        "Corporatiewoningen",
+        "Koopwoninging",
+        "Particuliere_huur",
+        "gebiedscode",
+        "Woningdichtheid",
+        "Woonoppervlak_0_40",
+        "Woonoppervlak_40_60",
+        "Woonoppervlak_60_80",
+        "Woonoppervlak_80_100",
+        "Woonoppervlak_100_plus",
+    ]
 
     X = amsterdam_data["X"]
     y = amsterdam_data["y"]
 
-    from sklearn.model_selection import train_test_split
+    
 
     # splitting the data, no crossfold validation
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-    reg = fit_model(X_train, y_train)
+    reg = fit_model(X_train, y_train) #TODO
 
-    saveModel(reg)
+    save_model(reg)
 
-    model = loadModel()
+    model = load_model()
 
-    p = reg.predict(X_test)
-    print(p)
+    p = model.predict(X_test)
 
-    print("Parameter 'max_depth' is {} for the optimal model.".format(model.get_params()["max_depth"]))
-
-    print("Amsterdam housing dataset has {} data points with {} variables each.".format(*X.shape))
+    print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, p)))
+    print("Amsterdam housing dataset has {} data points with {} variables each.".format(*amsterdam_data.shape))
 
 
 def performance_metric(y_true, y_predict):
 
     # Calculates and returns the performance score between
     # true (y_true) and predicted (y_predict) values based on the metric chosen.
-    from sklearn.metrics import r2_score
-
     score = r2_score(y_true, y_predict)
 
     # Return the score
@@ -41,9 +71,7 @@ def fit_model(X, y):
     # decision tree regressor trained on the input data [X, y].
 
     # Import 'make_scorer', 'DecisionTreeRegressor', and 'GridSearchCV'
-    from sklearn.tree import DecisionTreeRegressor
-    from sklearn.metrics import make_scorer
-    from sklearn.model_selection import GridSearchCV, ShuffleSplit
+
 
     # Create cross-validation sets from the training data
     cv_sets = ShuffleSplit(n_splits=10, test_size=0.20, random_state=0)
@@ -68,15 +96,17 @@ def fit_model(X, y):
     # Return the optimal model after fitting the data
     return grid.best_estimator_
 
+def fit_linear_regression(X_train,y_train):
+    reg = LinearRegression().fit(X_train,y_train)
+    return reg
 
-def saveModel(model):
-    import pickle
+def save_model(model):
 
     pickle.dump(model, open("pickle_model.sav", "wb"))
 
 
-def loadModel():
-    import pickle
+def load_model():
+    
 
     try:
         return pickle.load(open("pickle_model.sav", "rb"))
@@ -84,22 +114,18 @@ def loadModel():
         return False
 
 
-def getData():
-    from db import connection
-    import pandas as pd
+def get_data():
 
     amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 > 0", con=connection)
 
     features = [
         "jaar",
+        "WWOZ_PREV1",
         "Corporatiewoningen",
         "Koopwoninging",
         "Particuliere_huur",
         "gebiedscode",
-        "VCRIMIN_I",
         "Woningdichtheid",
-        "Culturele_voorzieningen",
-        "Aanbod_basisscholen",
         "Woonoppervlak_0_40",
         "Woonoppervlak_40_60",
         "Woonoppervlak_60_80",
@@ -113,12 +139,7 @@ def getData():
     return {"X": X, "y": y}
 
 
-import matplotlib.pyplot as pl
-import numpy as np
-from sklearn.model_selection import learning_curve
-from sklearn.model_selection import validation_curve
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.model_selection import ShuffleSplit
+
 
 # visual
 def model_complexity(X, y):
@@ -210,7 +231,7 @@ def model_learning(X, y):
     fig.suptitle("Decision Tree Regressor Learning Performances", fontsize=14, y=1)
     fig.tight_layout()
     # fig.show()
-
+    
     return fig
 
 
@@ -218,7 +239,7 @@ def model_learning(X, y):
 
 
 def display_plot(X, y):
-    import plotly.graph_objects as go
+
 
     # Create 10 cross-validation sets for training and testing
     cv = ShuffleSplit(n_splits=10, test_size=0.5, random_state=0)

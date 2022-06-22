@@ -54,7 +54,6 @@ def load_view():
     )
 
     st.plotly_chart(fig, use_container_width=True)
-
     chart1, chart2 = st.columns(2)
 
     from PIL import Image

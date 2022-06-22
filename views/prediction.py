@@ -1,3 +1,5 @@
+from datetime import date
+from operator import index
 import streamlit as st
 import pandas as pd
 from db import connection
@@ -22,26 +24,22 @@ def load_view():
         # neighbourhood
         neighbourhood = st.selectbox("Your new neighbourhood:", amsterdam_data)
 
-        # House type
-        house_type = st.selectbox("Type Of house:", ("All", "Housing associations", "Private rent", "Purchased house"))
-        # st.write("You selected:", house_type)
+        neighbourhood_data = connection.execute(
+            f"SELECT * FROM big_data.amsterdam WHERE gebiedcodenaam = '{neighbourhood}'"
+       ).first()
 
         # number square meters
         number_m = st.number_input("Square meters:", step=1, value=60)
-        # st.write("The current number is ", number_m)
-
-        neighbourhood_data = connection.execute(
-            f"SELECT *, FLOOR(SUM(VCRIMIN_I) / count(*)) AS 'crime', FLOOR(SUM(Aanbod_basisscholen + Culturele_voorzieningen)) AS 'facilities' FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'"
-        ).first()
-
-        # Crime percentage
-        crime = st.number_input("Average crime encounters:", value=int(neighbourhood_data.crime))
-        # st.write("Crime: ", crime_percentage)
-
-        # facilities amount
-        facilities = st.number_input("Amount of facilities:", value=int(neighbourhood_data.facilities))
-        # st.write("Crime: ", facilities_per)
-
+        percentage_0_40 = st.number_input("Percentage tussen de 0 en 40 m2:",step = 1 ,value=int(neighbourhood_data.Woonoppervlak_0_40))
+        percentage_40_60 = st.number_input("Percentage tussen de 40 en 60 m2:", step=1, value=int(neighbourhood_data.Woonoppervlak_40_60))
+        percentage_60_80 = st.number_input("Percentage tussen de 60 en 80 m2:", step=1, value=int(neighbourhood_data.Woonoppervlak_60_80))
+        percentage_80_100 = st.number_input("Percentage tussen de 80 en 100 m2:", step=1, value=int(neighbourhood_data.Woonoppervlak_80_100))
+        percentage_100plus = st.number_input("Percentage 100 plus m2:", step=1, value=int(neighbourhood_data.Woonoppervlak_100_plus))
+        percentage_corporatie = st.number_input("Percentage corperatie woningen:", step=1, value=int(neighbourhood_data.Corporatiewoningen))
+        percentage_koop = st.number_input("Percentage koop woningen:", step=1, value=int(neighbourhood_data.Koopwoninging))
+        percentage_particulier = st.number_input("Percentage particuliere huurwoningen:", step=1, value=int(neighbourhood_data.Particuliere_huur))
+        woningdichtheid = st.number_input("Woningdichtheid:", step=1, value=int(neighbourhood_data.Woningdichtheid))
+        WOZ_waarde = neighbourhood_data.WOZ_per_M2
         submit_button = st.button(label="🏠 Predict House Price!")
 
         # if submit_button == True:
@@ -56,7 +54,8 @@ def load_view():
             if "last_price" not in st.session_state:
                 st.session_state["last_price"] = 0
 
-            pre = predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data)
+            pre = predict(neighbourhood,percentage_0_40,percentage_40_60,percentage_60_80,percentage_80_100,percentage_100plus,percentage_corporatie,percentage_koop,percentage_particulier,WOZ_waarde, woningdichtheid)
+            st.markdown(f"#### 🏠 Your new house will cost you about : ")
             price = round((pre[0] * number_m), 2)
 
             st.markdown("#### 🏠 Your new house will cost you about:")
@@ -65,9 +64,9 @@ def load_view():
 
             st.session_state["last_price"] = pre[0]
 
-        from model import display_plot, getData
+        from model import display_plot, get_data
 
-        data = getData()
+        data = get_data()
 
         c2.plotly_chart(display_plot(data["X"], data["y"]), use_container_width=True)
 
@@ -115,33 +114,31 @@ def load_view():
         st.stop()
 
 
-def predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data):
-    from model import loadModel
+def predict(neighbourhood,percentage_0_40,percentage_40_60,percentage_60_80,percentage_80_100,percentage_100plus,percentage_corporatie,percentage_koop,percentage_particulier,WOZ_waarde,woningdichtheid):
+    from model import load_model
     import pandas as pd
     from datetime import date
 
     client_data = {
-        "jaar": date.today().year,
-        "Corporatiewoningen": [100 if house_type == "Housing associations" or house_type == "All" else 0],
-        "Koopwoninging": [100 if house_type == "Purchased house" or house_type == "All" else 0],
-        "Particuliere_huur": [100 if house_type == "Private rent" or house_type == "All" else 0],
-        "gebiedscode": [connection.execute(f"SELECT gebiedscode FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first().gebiedscode],
-        "VCRIMIN_I": [crime],
-        "Woningdichtheid": [neighbourhood_data.Woningdichtheid],
-        "Culturele_voorzieningen": [facilities],
-        "Aanbod_basisscholen": [facilities],
-        "Woonoppervlak_0_40": [100 if (number_m >= 0 and number_m < 40) else 0],
-        "Woonoppervlak_40_60": [100 if (number_m >= 40 and number_m < 60) else 0],
-        "Woonoppervlak_60_80": [100 if (number_m >= 60 and number_m < 80) else 0],
-        "Woonoppervlak_80_100": [100 if (number_m >= 80 and number_m < 100) else 0],
-        "Woonoppervlak_100_plus": [100 if (number_m >= 100) else 0],
+        'jaar' : [date.today().year],
+        "WWOZ_PREV1" : [WOZ_waarde],
+        "Corporatiewoningen" : [percentage_corporatie],
+        "Koopwoninging" : [percentage_koop],
+        "Particuliere_huur": [percentage_particulier],
+        "gebiedscode" : [connection.execute(f"SELECT gebiedscode FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first().gebiedscode],
+        "Woningdichtheid" : [woningdichtheid],
+        "Woonoppervlak_0_40" : [percentage_0_40],
+        "Woonoppervlak_40_60" : [percentage_40_60],
+        "Woonoppervlak_60_80" : [percentage_60_80],
+        "Woonoppervlak_80_100" : [percentage_80_100],
+        "Woonoppervlak_100_plus" : [percentage_100plus], 
     }
 
-    data = pd.DataFrame(client_data)
+    df = pd.DataFrame(data = client_data)
 
     # st.write(data)
 
-    model = loadModel()
-    pred = model.predict(data)
+    model = load_model()
+    pred = model.predict(df)
 
     return pred
