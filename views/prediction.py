@@ -10,7 +10,7 @@ def load_view():
 
     # with st.form(key="my_form"):
 
-    c1, c2 = st.columns([1, 5])
+    c1, c2, c3 = st.columns([1, 2, 3])
 
     with c1:
 
@@ -49,7 +49,7 @@ def load_view():
 
     with c2:
 
-        st.markdown("### Check out the prices!")
+        st.markdown("### Check out the price!")
 
         if submit_button == True:
 
@@ -57,12 +57,23 @@ def load_view():
                 st.session_state["last_price"] = 0
 
             pre = predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data)
-            st.markdown(f"#### 🏠 Your new house will cost you about : ")
             price = round((pre[0] * number_m), 2)
+
+            st.markdown("#### 🏠 Your new house will cost you about:")
 
             st.metric(label="", value=f"€ {price}", delta=(pre[0] - st.session_state["last_price"]))
 
             st.session_state["last_price"] = pre[0]
+
+        from model import display_plot, getData
+
+        data = getData()
+
+        c2.plotly_chart(display_plot(data["X"], data["y"]), use_container_width=True)
+
+    with c3:
+
+        st.markdown("### Check out the Neighbourhood!")
 
         amsterdam_data = pd.read_sql("SELECT * FROM amsterdam INNER JOIN geo_info ON (amsterdam.wijkcode = geo_info.wijkcode)", con=connection)
 
@@ -95,44 +106,10 @@ def load_view():
                         extruded=True,
                         wireframe=True,
                         coverage=1,
-                        # "PolygonLayer",
-                        # data=amsterdam_data,
-                        # id="geojson",
-                        # opacity=0.8,
-                        # stroked=False,
-                        # get_polygon="coordinates",
-                        # filled=True,
-                        # extruded=True,
-                        # wireframe=True,
-                        # getWidth=0.01,
-                        # getLineWidth=0.01,
-                        # get_elevation="WOZ_per_M2",
-                        # get_fill_color="WOZ_per_M2",
-                        # get_line_color=[255, 255, 255],
-                        # auto_highlight=True,
-                        # pickable=True,
                     ),
-                    # pdk.Layer(
-                    #     "ScatterplotLayer",
-                    #     data=amsterdam_data,
-                    #     get_position="[lon, lat]",
-                    #     get_color="[200, 30, 0, 160]",
-                    #     get_radius=200,
-                    # ),
                 ],
-                # tooltip={
-                #     "html": "Elevation Value: {WOZ_per_M2}",
-                #     # "style": {
-                #     #     "backgroundColor": "gray",
-                #     #     "color": "white",
-                #     # },
-                # },
             )
         )
-
-        # test = amsterdam_data["WOZ_per_M2"]
-        # print(test)
-        # st.markdown("test")
 
     if not submit_button:
         st.stop()
@@ -141,8 +118,10 @@ def load_view():
 def predict(neighbourhood, house_type, number_m, crime, facilities, neighbourhood_data):
     from model import loadModel
     import pandas as pd
+    from datetime import date
 
     client_data = {
+        "jaar": date.today().year,
         "Corporatiewoningen": [100 if house_type == "Housing associations" or house_type == "All" else 0],
         "Koopwoninging": [100 if house_type == "Purchased house" or house_type == "All" else 0],
         "Particuliere_huur": [100 if house_type == "Private rent" or house_type == "All" else 0],

@@ -3,7 +3,7 @@ from pandas import DataFrame
 import streamlit as st
 import navigation
 
-# setup broweser tab title
+# setup tab title
 st.set_page_config(page_title="Big Data", layout="wide")
 
 # add css to document
@@ -16,6 +16,25 @@ st.markdown(
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         .css-1cpxqw2{ width:100% !important;}
+        .custom_button{
+            width:100% !important;
+            display: inline-flex;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            font-weight: 400;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            margin: 0px;
+            line-height: 1.6;
+            color: inherit;
+            width: auto;
+            user-select: none;
+            background-color: rgb(255, 255, 255);
+            border: 1px solid rgba(49, 51, 63, 0.2);
+        }
+        .custom_button:hover{border-color: rgb(255, 75, 75);color: rgb(255, 75, 75);}
     </style> """,
     unsafe_allow_html=True,
 )
