@@ -69,7 +69,7 @@ def load_view():
 
             st.markdown("#### 🏠 Your new house will cost you about:")
 
-            st.metric(label="", value=f"€ {price}", delta=(pre[0] - st.session_state["last_price"]))
+            st.metric(label="", value=f"€ {price}", delta=(round(pre[0] - st.session_state["last_price"],2)))
 
             st.session_state["last_price"] = pre[0]
 
