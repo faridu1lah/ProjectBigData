@@ -8,9 +8,7 @@ from sklearn.linear_model import LinearRegression
 import plotly.graph_objects as go
 import streamlit as st
 from sklearn.metrics import make_scorer, r2_score
-from sklearn.model_selection import (GridSearchCV, ShuffleSplit,
-                                     learning_curve, train_test_split,
-                                     validation_curve)
+from sklearn.model_selection import GridSearchCV, ShuffleSplit, learning_curve, train_test_split, validation_curve
 from sklearn.tree import DecisionTreeRegressor
 
 from db import connection
@@ -18,33 +16,15 @@ from db import connection
 
 def create_model():
 
-
-    amsterdam_data = pd.read_sql("SELECT * FROM amsterdam WHERE WOZ_per_M2 > 0", con=connection)
-
-    features = [
-        "jaar",
-        "WWOZ_PREV1",
-        "Corporatiewoningen",
-        "Koopwoninging",
-        "Particuliere_huur",
-        "gebiedscode",
-        "Woningdichtheid",
-        "Woonoppervlak_0_40",
-        "Woonoppervlak_40_60",
-        "Woonoppervlak_60_80",
-        "Woonoppervlak_80_100",
-        "Woonoppervlak_100_plus",
-    ]
+    amsterdam_data = get_data()
 
     X = amsterdam_data["X"]
     y = amsterdam_data["y"]
 
-    
-
     # splitting the data, no crossfold validation
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-    reg = fit_model(X_train, y_train) #TODO
+    reg = fit_model(X_train, y_train)  # TODO
 
     save_model(reg)
 
@@ -52,8 +32,8 @@ def create_model():
 
     p = model.predict(X_test)
 
-    print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, p)))
-    print("Amsterdam housing dataset has {} data points with {} variables each.".format(*amsterdam_data.shape))
+    print("Root Mean Squared Error:", np.sqrt(metrics.mean_squared_error(y_test, p)))
+    print("Amsterdam housing dataset has {} data points with {} variables each.".format(*amsterdam_data["X"].shape))
 
 
 def performance_metric(y_true, y_predict):
@@ -71,7 +51,6 @@ def fit_model(X, y):
     # decision tree regressor trained on the input data [X, y].
 
     # Import 'make_scorer', 'DecisionTreeRegressor', and 'GridSearchCV'
-
 
     # Create cross-validation sets from the training data
     cv_sets = ShuffleSplit(n_splits=10, test_size=0.20, random_state=0)
@@ -96,9 +75,11 @@ def fit_model(X, y):
     # Return the optimal model after fitting the data
     return grid.best_estimator_
 
-def fit_linear_regression(X_train,y_train):
-    reg = LinearRegression().fit(X_train,y_train)
+
+def fit_linear_regression(X_train, y_train):
+    reg = LinearRegression().fit(X_train, y_train)
     return reg
+
 
 def save_model(model):
 
@@ -106,7 +87,6 @@ def save_model(model):
 
 
 def load_model():
-    
 
     try:
         return pickle.load(open("pickle_model.sav", "rb"))
@@ -137,8 +117,6 @@ def get_data():
     X = amsterdam_data[features]
 
     return {"X": X, "y": y}
-
-
 
 
 # visual
@@ -231,7 +209,7 @@ def model_learning(X, y):
     fig.suptitle("Decision Tree Regressor Learning Performances", fontsize=14, y=1)
     fig.tight_layout()
     # fig.show()
-    
+
     return fig
 
 
@@ -239,7 +217,6 @@ def model_learning(X, y):
 
 
 def display_plot(X, y):
-
 
     # Create 10 cross-validation sets for training and testing
     cv = ShuffleSplit(n_splits=10, test_size=0.5, random_state=0)

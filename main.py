@@ -1,5 +1,3 @@
-import imp
-from pandas import DataFrame
 import streamlit as st
 import navigation
 
@@ -41,3 +39,7 @@ st.markdown(
 
 # load navigation options and content
 navigation.load()
+
+from model import create_model
+
+create_model()

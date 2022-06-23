@@ -76,7 +76,7 @@ def checkDatabase():
 
     if token == "bestgroup":
 
-        st.title("Updated database from csv!")
+        # st.title("Updated database from csv!")
 
         from db import connection
         from cleaning import getData, getGeoInfo
