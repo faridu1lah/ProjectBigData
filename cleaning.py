@@ -2,81 +2,73 @@ from sklearn.metrics import jaccard_score
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
 import json
-from shapely.validation import make_valid
-from shapely.geometry import Polygon
+
 
 def getData():
-    raw = pd.read_csv("data/bbga.csv",sep=";")
+    raw = pd.read_csv("data/bbga.csv", sep=";")
 
     raw = raw.replace(",", ".", regex=True)
 
-    cols_to_keep = ["niveau",
-                "niveaunaam",
-                "gebiedcodenaam",
-                "gebiedcode22",
-                "jaar",
-                "WOPP0040_P",
-                "WOPP4060_P",
-                "WOPP6080_P",
-                "WOPP80100_P",
-                "WOPP100PLUS_P",
-                "WOPPONB_P",
-                "VCRIMIN_I",
-                "SRCULTVOORZ_R",
-                "OAANBODBAO_R",
-                "WDICHT",
-                "BEVEENOUDERHH_P",
-                "BEVALLEENHH_P",
-                "BEVPAARZKINDHH_P",
-                "BEVPAARMKINDHH_P",
-                "BEVOVERIGHH_P",
-                "WCORHUUR_P",
-                "WPARTHUUR_P",
-                "WKOOP_P",
-                "WWOZ_M2",
-                
+    cols_to_keep = [
+        "niveau",
+        "niveaunaam",
+        "gebiedcodenaam",
+        "gebiedcode22",
+        "jaar",
+        "WOPP0040_P",
+        "WOPP4060_P",
+        "WOPP6080_P",
+        "WOPP80100_P",
+        "WOPP100PLUS_P",
+        "WOPPONB_P",
+        "VCRIMIN_I",
+        "SRCULTVOORZ_R",
+        "OAANBODBAO_R",
+        "WDICHT",
+        "BEVEENOUDERHH_P",
+        "BEVALLEENHH_P",
+        "BEVPAARZKINDHH_P",
+        "BEVPAARMKINDHH_P",
+        "BEVOVERIGHH_P",
+        "WCORHUUR_P",
+        "WPARTHUUR_P",
+        "WKOOP_P",
+        "WWOZ_M2",
     ]
-    colsint = [     "jaar",
-                "WOPP0040_P",
-                "WOPP4060_P",
-                "WOPP6080_P",
-                "WOPP80100_P",
-                "WOPP100PLUS_P",
-                "WOPPONB_P",
-                "WDICHT",
-                "BEVEENOUDERHH_P",
-                "BEVALLEENHH_P",
-                "BEVPAARZKINDHH_P",
-                "BEVPAARMKINDHH_P",
-                "BEVOVERIGHH_P",
-                "WCORHUUR_P",
-                "WPARTHUUR_P",
-                "WKOOP_P",
-                "WWOZ_M2",
-                
+
+    colsint = [
+        "jaar",
+        "WOPP0040_P",
+        "WOPP4060_P",
+        "WOPP6080_P",
+        "WOPP80100_P",
+        "WOPP100PLUS_P",
+        "WOPPONB_P",
+        "WDICHT",
+        "BEVEENOUDERHH_P",
+        "BEVALLEENHH_P",
+        "BEVPAARZKINDHH_P",
+        "BEVPAARMKINDHH_P",
+        "BEVOVERIGHH_P",
+        "WCORHUUR_P",
+        "WPARTHUUR_P",
+        "WKOOP_P",
+        "WWOZ_M2",
     ]
+
     data = raw[cols_to_keep]
 
-    data[cols_to_keep]=data[cols_to_keep].fillna(data.mean().iloc[0])
+    data[cols_to_keep] = data[cols_to_keep].fillna(data.mean().iloc[0])
     data[colsint] = data[colsint].apply(pd.to_numeric)
-
-
 
     data = data[data["niveau"] == 4]
 
-
     data = data[(data["jaar"] < 2021) & (data["jaar"] > 2015)]
 
-    #crime rates aren't available for 2021
-    data = data.drop(["VCRIMIN_I"],axis=1)
-    data = data.drop(["OAANBODBAO_R"],axis=1)
-    data = data.drop(["SRCULTVOORZ_R"],axis=1)
-
-
-
-
-
-
+    # crime rates aren't available for 2021
+    data = data.drop(["VCRIMIN_I"], axis=1)
+    data = data.drop(["OAANBODBAO_R"], axis=1)
+    data = data.drop(["SRCULTVOORZ_R"], axis=1)
 
     data = data.rename(
         columns={
@@ -100,30 +92,27 @@ def getData():
         }
     )
 
-    
-
     le = LabelEncoder()
 
     data["gebiedscode"] = le.fit_transform(data["gebiedcodenaam"])
     data = get_woz_features(data)
-    
+
     return data
+
+
 def get_woz_features(data):
 
     data = data.sort_values(by=["gebiedcodenaam", "jaar"])
-    data["WWOZ_PREV1"] = data.groupby("gebiedcodenaam")["WOZ_per_M2"].transform(
-        lambda x: x.shift(1)
-    )
-
+    data["WWOZ_PREV1"] = data.groupby("gebiedcodenaam")["WOZ_per_M2"].transform(lambda x: x.shift(1))
 
     # fill first dataset entry(s) with first known WOZ value, if missing
-    
+
     data["WWOZ_PREV1"] = data.groupby("gebiedcodenaam")["WWOZ_PREV1"].transform(lambda x: x.fillna(x.min()))
     return data
 
+
 def getGeoInfo():
     # from os import sep
-
 
     raw = pd.read_csv("data/lat_and_lon.csv", sep=";")
     jsonData = pd.read_json("https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=INDELING_WIJK&THEMA=gebiedsindeling")

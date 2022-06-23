@@ -24,13 +24,11 @@ def load_view():
         # neighbourhood
         neighbourhood = st.selectbox("Your new neighbourhood:", amsterdam_data)
 
-        neighbourhood_data = connection.execute(
-            f"SELECT * FROM big_data.amsterdam WHERE gebiedcodenaam = '{neighbourhood}'"
-       ).first()
+        neighbourhood_data = connection.execute(f"SELECT * FROM big_data.amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first()
 
         # number square meters
         number_m = st.number_input("Square meters:", step=1, value=60)
-        percentage_0_40 = st.number_input("Percentage tussen de 0 en 40 m2:",step = 1 ,value=int(neighbourhood_data.Woonoppervlak_0_40))
+        percentage_0_40 = st.number_input("Percentage tussen de 0 en 40 m2:", step=1, value=int(neighbourhood_data.Woonoppervlak_0_40))
         percentage_40_60 = st.number_input("Percentage tussen de 40 en 60 m2:", step=1, value=int(neighbourhood_data.Woonoppervlak_40_60))
         percentage_60_80 = st.number_input("Percentage tussen de 60 en 80 m2:", step=1, value=int(neighbourhood_data.Woonoppervlak_60_80))
         percentage_80_100 = st.number_input("Percentage tussen de 80 en 100 m2:", step=1, value=int(neighbourhood_data.Woonoppervlak_80_100))
@@ -54,8 +52,19 @@ def load_view():
             if "last_price" not in st.session_state:
                 st.session_state["last_price"] = 0
 
-            pre = predict(neighbourhood,percentage_0_40,percentage_40_60,percentage_60_80,percentage_80_100,percentage_100plus,percentage_corporatie,percentage_koop,percentage_particulier,WOZ_waarde, woningdichtheid)
-            st.markdown(f"#### 🏠 Your new house will cost you about : ")
+            pre = predict(
+                neighbourhood,
+                percentage_0_40,
+                percentage_40_60,
+                percentage_60_80,
+                percentage_80_100,
+                percentage_100plus,
+                percentage_corporatie,
+                percentage_koop,
+                percentage_particulier,
+                WOZ_waarde,
+                woningdichtheid,
+            )
             price = round((pre[0] * number_m), 2)
 
             st.markdown("#### 🏠 Your new house will cost you about:")
@@ -114,27 +123,39 @@ def load_view():
         st.stop()
 
 
-def predict(neighbourhood,percentage_0_40,percentage_40_60,percentage_60_80,percentage_80_100,percentage_100plus,percentage_corporatie,percentage_koop,percentage_particulier,WOZ_waarde,woningdichtheid):
+def predict(
+    neighbourhood,
+    percentage_0_40,
+    percentage_40_60,
+    percentage_60_80,
+    percentage_80_100,
+    percentage_100plus,
+    percentage_corporatie,
+    percentage_koop,
+    percentage_particulier,
+    WOZ_waarde,
+    woningdichtheid,
+):
     from model import load_model
     import pandas as pd
     from datetime import date
 
     client_data = {
-        'jaar' : [date.today().year],
-        "WWOZ_PREV1" : [WOZ_waarde],
-        "Corporatiewoningen" : [percentage_corporatie],
-        "Koopwoninging" : [percentage_koop],
+        "jaar": [date.today().year],
+        "WWOZ_PREV1": [WOZ_waarde],
+        "Corporatiewoningen": [percentage_corporatie],
+        "Koopwoninging": [percentage_koop],
         "Particuliere_huur": [percentage_particulier],
-        "gebiedscode" : [connection.execute(f"SELECT gebiedscode FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first().gebiedscode],
-        "Woningdichtheid" : [woningdichtheid],
-        "Woonoppervlak_0_40" : [percentage_0_40],
-        "Woonoppervlak_40_60" : [percentage_40_60],
-        "Woonoppervlak_60_80" : [percentage_60_80],
-        "Woonoppervlak_80_100" : [percentage_80_100],
-        "Woonoppervlak_100_plus" : [percentage_100plus], 
+        "gebiedscode": [connection.execute(f"SELECT gebiedscode FROM amsterdam WHERE gebiedcodenaam = '{neighbourhood}'").first().gebiedscode],
+        "Woningdichtheid": [woningdichtheid],
+        "Woonoppervlak_0_40": [percentage_0_40],
+        "Woonoppervlak_40_60": [percentage_40_60],
+        "Woonoppervlak_60_80": [percentage_60_80],
+        "Woonoppervlak_80_100": [percentage_80_100],
+        "Woonoppervlak_100_plus": [percentage_100plus],
     }
 
-    df = pd.DataFrame(data = client_data)
+    df = pd.DataFrame(data=client_data)
 
     # st.write(data)
 

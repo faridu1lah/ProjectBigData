@@ -2,7 +2,7 @@
 mysql = {
     "host": "localhost",
     "user": "root",
-    "pas": "admin",
+    "pas": "root",
     "db": "big_data",
     "port": "3306",
 }
